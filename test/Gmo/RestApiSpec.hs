@@ -10,12 +10,6 @@ import Control.Lens
 main :: IO ()
 main = hspec spec
 
-spec' :: Spec
-spec' = do 
-    describe "first test sample" $ do
-        it "one add one equals two" $ do
-            (1 + 1) `shouldBe` (2 :: Int)
-
 extractStatus :: IO (Maybe Value) -> IO (Maybe String)
 extractStatus obj = do
     value <- obj
@@ -24,7 +18,7 @@ extractStatus obj = do
 spec :: Spec
 spec = do 
     describe "test Gmo.RestApi" $ do
-        describe "test getStatus" $ do
-            it "status 0 is ok" $ do
-                extractStatus checkStatus `shouldReturn` Just "OPEN"
+      describe "test getStatus" $ do
+        it "status 0 is ok" $ do
+          extractStatus checkStatus `shouldReturn` Just "OPEN"
 

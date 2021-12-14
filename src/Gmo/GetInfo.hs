@@ -22,10 +22,12 @@ import           Network.HTTP.Simple
 endPoint :: S.String
 endPoint = baseUrl <> "/private/"
 
+type GMOToken = (B.ByteString, B.ByteString)
+
 show' :: forall a. Show a=> a -> Maybe BS.ByteString 
 show' = Just . BS.pack . show
 
-getPrivateInfo :: S.String -> Query -> (B.ByteString, B.ByteString) -> IO S8.ByteString 
+getPrivateInfo :: S.String -> Query -> GMOToken -> IO (Maybe Value)
 getPrivateInfo path query api = do
   posixTime <- getPOSIXTime
   let epochTime = BS.pack . show . round $ posixTime
@@ -44,25 +46,25 @@ getPrivateInfo path query api = do
         $ setRequestQueryString query
         $ request'
   response <- httpJSON request
-  pure $ encodePretty (getResponseBody response :: Value)
+  pure (getResponseBody response :: Maybe Value)
 
-getMargin :: (B.ByteString, B.ByteString) -> IO S8.ByteString
+getMargin :: GMOToken -> IO (Maybe Value)
 getMargin = getPrivateInfo "v1/account/margin" []
 
-getAssets :: (B.ByteString, B.ByteString) -> IO S8.ByteString
+getAssets :: GMOToken -> IO (Maybe Value)
 getAssets = getPrivateInfo "v1/account/assets" []
 
-getOrders :: [Integer] -> (B.ByteString, B.ByteString) -> IO S8.ByteString
+getOrders :: [Integer] -> GMOToken -> IO (Maybe Value)
 getOrders ids = 
       let query = B.intercalate "," . map (BS.pack . show) :: ([Integer] -> B.ByteString)
       in getPrivateInfo "v1/orders" [("orderId", Just $ query ids)]
 
-getActiveOrder :: Coin -> Int -> Int -> (B.ByteString, B.ByteString) -> IO S8.ByteString
+getActiveOrder :: Coin -> Int -> Int -> GMOToken -> IO (Maybe Value)
 getActiveOrder coin page count = 
       let query = [("order", show' coin), ("page", show' page), ("count", show' count)] 
       in getPrivateInfo "v1/account/assets" []
 
-getLatestExecutions :: Coin -> Int -> Int -> (B.ByteString, B.ByteString) -> IO S8.ByteString
+getLatestExecutions :: Coin -> Int -> Int -> GMOToken -> IO (Maybe Value)
 getLatestExecutions coin page count = 
       let query = [("order", show' coin), ("page", show' page), ("count", show' count)]
       in getPrivateInfo "v1/latetExecutions" query
