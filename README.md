@@ -1,7 +1,7 @@
 # GMOcoin API + DiscodeBot sample
 
 How to use
-1. get each token and decide channel you want to use.
+1. get each token.
 2. add config.env to project root as below.
 
 channel:WWWWWWW  
