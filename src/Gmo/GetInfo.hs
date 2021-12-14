@@ -17,12 +17,11 @@ import           Data.Monoid                ((<>))
 import qualified Data.String                as S
 import           Data.Time.Clock.POSIX      (getPOSIXTime)
 import           Network.HTTP.Simple
---makeLenses
+
 
 endPoint :: S.String
 endPoint = baseUrl <> "/private/"
 
-type GMOToken = (B.ByteString, B.ByteString)
 
 show' :: forall a. Show a=> a -> Maybe BS.ByteString 
 show' = Just . BS.pack . show

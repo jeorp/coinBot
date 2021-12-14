@@ -1,17 +1,19 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 module Common (
-  baseUrl,configFile, Coin(..), Side(..), ExecutionType(..),
+  baseUrl,configFile, GMOToken, Coin(..), Side(..), ExecutionType(..),
   TimelnForce(..), Kline(..), Curve, Ticker(..),
   OrderBook(..), OrderBooks(..), Config(..),
   ProfitLoss(..), Assets(..)
   ) where
 import Control.Lens
 import Data.Text (Text)
+import qualified Data.ByteString as B
 
 baseUrl = "https://api.coin.z.com/"
 configFile = "config.env"
 
+type GMOToken = (B.ByteString, B.ByteString)
 
 data Coin = BTC | ETH | BCH | LTC | XRP | XEM | XLM | XYM |
           BTC_JPY | ETH_JPY | BCH_JPY | LTC_JPY | XRP_JPY deriving (Show, Eq)
