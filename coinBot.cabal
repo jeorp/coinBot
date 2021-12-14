@@ -1,0 +1,145 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           coinBot
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/coinBot#readme>
+homepage:       https://github.com/jeorp/coinBot#readme
+bug-reports:    https://github.com/jeorp/coinBot/issues
+author:         jerop
+maintainer:     jeorp@google.com
+copyright:      2021 jeorp
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/jeorp/coinBot
+
+library
+  exposed-modules:
+      Bot.Reply
+      Common
+      GetToken
+      Gmo.GetInfo
+      Gmo.RestApi
+      Run
+  other-modules:
+      Paths_coinBot
+  hs-source-dirs:
+      src
+  build-depends:
+      QuickCheck
+    , aeson
+    , aeson-lens
+    , aeson-pretty
+    , aeson-qq
+    , attoparsec
+    , base >=4.7 && <5
+    , base16-bytestring
+    , binary
+    , bytestring
+    , cryptohash-sha256
+    , directory
+    , discord-haskell
+    , hspec
+    , http-client
+    , http-conduit
+    , lens
+    , mtl
+    , network
+    , pipes
+    , safe-exceptions
+    , text
+    , time
+    , transformers
+    , unliftio
+    , websockets
+    , wuss
+  default-language: Haskell2010
+
+executable coinBot-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_coinBot
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , aeson
+    , aeson-lens
+    , aeson-pretty
+    , aeson-qq
+    , attoparsec
+    , base >=4.7 && <5
+    , base16-bytestring
+    , binary
+    , bytestring
+    , coinBot
+    , cryptohash-sha256
+    , directory
+    , discord-haskell
+    , hspec
+    , http-client
+    , http-conduit
+    , lens
+    , mtl
+    , network
+    , pipes
+    , safe-exceptions
+    , text
+    , time
+    , transformers
+    , unliftio
+    , websockets
+    , wuss
+  default-language: Haskell2010
+
+test-suite coinBot-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Gmo.GetInfoSpec
+      Gmo.RestApiSpec
+      Paths_coinBot
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , aeson
+    , aeson-lens
+    , aeson-pretty
+    , aeson-qq
+    , attoparsec
+    , base >=4.7 && <5
+    , base16-bytestring
+    , binary
+    , bytestring
+    , coinBot
+    , cryptohash-sha256
+    , directory
+    , discord-haskell
+    , hspec
+    , http-client
+    , http-conduit
+    , lens
+    , mtl
+    , network
+    , pipes
+    , safe-exceptions
+    , text
+    , time
+    , transformers
+    , unliftio
+    , websockets
+    , wuss
+  default-language: Haskell2010

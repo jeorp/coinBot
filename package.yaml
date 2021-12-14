@@ -1,0 +1,74 @@
+name:                coinBot
+version:             0.1.0.0
+github:              "jeorp/coinBot"
+license:             BSD3
+author:              "jerop"
+maintainer:          "jeorp@google.com"
+copyright:           "2021 jeorp"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/coinBot#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- text
+- transformers
+- directory
+- mtl
+- text
+- unliftio
+- discord-haskell
+- aeson
+- aeson-pretty
+- aeson-qq
+- aeson-lens
+- binary
+- bytestring
+- base16-bytestring
+- cryptohash-sha256
+- time
+- safe-exceptions
+- lens
+- pipes
+- attoparsec
+- websockets
+- http-client
+- http-conduit
+- wuss
+- network
+- hspec
+- QuickCheck
+library:
+  source-dirs: src
+
+executables:
+  coinBot-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - coinBot
+
+tests:
+  coinBot-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - coinBot
