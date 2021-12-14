@@ -1,4 +1,4 @@
-# GMOcoin API + DiscodeBot sample
+# GMOcoin API + DiscodeBot sample (Now developing..)
 
 How to use
 1. get each token.
