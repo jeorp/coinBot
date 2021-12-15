@@ -27,6 +27,7 @@ library
   exposed-modules:
       Bot.Reply
       Common
+      Extensible
       GetToken
       Gmo.GetInfo
       Gmo.RestApi
@@ -38,7 +39,6 @@ library
   build-depends:
       QuickCheck
     , aeson
-    , aeson-lens
     , aeson-qq
     , attoparsec
     , base >=4.7 && <5
@@ -48,10 +48,12 @@ library
     , cryptohash-sha256
     , directory
     , discord-haskell
+    , extensible
     , hspec
     , http-client
     , http-conduit
     , lens
+    , lens-aeson
     , mtl
     , network
     , pipes
@@ -74,7 +76,6 @@ executable coinBot-exe
   build-depends:
       QuickCheck
     , aeson
-    , aeson-lens
     , aeson-qq
     , attoparsec
     , base >=4.7 && <5
@@ -85,10 +86,12 @@ executable coinBot-exe
     , cryptohash-sha256
     , directory
     , discord-haskell
+    , extensible
     , hspec
     , http-client
     , http-conduit
     , lens
+    , lens-aeson
     , mtl
     , network
     , pipes
@@ -114,7 +117,6 @@ test-suite coinBot-test
   build-depends:
       QuickCheck
     , aeson
-    , aeson-lens
     , aeson-qq
     , attoparsec
     , base >=4.7 && <5
@@ -125,10 +127,12 @@ test-suite coinBot-test
     , cryptohash-sha256
     , directory
     , discord-haskell
+    , extensible
     , hspec
     , http-client
     , http-conduit
     , lens
+    , lens-aeson
     , mtl
     , network
     , pipes

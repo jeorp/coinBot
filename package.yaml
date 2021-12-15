@@ -30,7 +30,8 @@ dependencies:
 - discord-haskell
 - aeson
 - aeson-qq
-- aeson-lens
+- lens-aeson
+- extensible
 - binary
 - bytestring
 - base16-bytestring
