@@ -8,7 +8,7 @@ import Common
 import Control.Lens
 
 import           Data.Aeson                 (Value)
-import           Data.Aeson.Encode.Pretty
+
 import qualified Data.ByteString.Lazy.Char8 as S8
 import qualified Data.ByteString.Char8 as SB
 import           Network.HTTP.Simple

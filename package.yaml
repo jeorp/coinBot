@@ -29,7 +29,6 @@ dependencies:
 - unliftio
 - discord-haskell
 - aeson
-- aeson-pretty
 - aeson-qq
 - aeson-lens
 - binary

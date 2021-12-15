@@ -15,7 +15,7 @@ configFile = "config.env"
 
 type GMOToken = (B.ByteString, B.ByteString)
 
-data Coin = BTC | ETH | BCH | LTC | XRP | XEM | XLM | XYM |
+data Coin = BTC | ETH | BCH | LTC | XRP | XEM | XLM | XYM | MONA |
           BTC_JPY | ETH_JPY | BCH_JPY | LTC_JPY | XRP_JPY deriving (Show, Eq)
 
 data Side = BUY | SELL deriving (Show, Eq)

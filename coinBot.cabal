@@ -39,7 +39,6 @@ library
       QuickCheck
     , aeson
     , aeson-lens
-    , aeson-pretty
     , aeson-qq
     , attoparsec
     , base >=4.7 && <5
@@ -76,7 +75,6 @@ executable coinBot-exe
       QuickCheck
     , aeson
     , aeson-lens
-    , aeson-pretty
     , aeson-qq
     , attoparsec
     , base >=4.7 && <5
@@ -117,7 +115,6 @@ test-suite coinBot-test
       QuickCheck
     , aeson
     , aeson-lens
-    , aeson-pretty
     , aeson-qq
     , attoparsec
     , base >=4.7 && <5
