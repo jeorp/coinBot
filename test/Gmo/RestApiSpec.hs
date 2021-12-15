@@ -16,7 +16,7 @@ main = hspec spec
 extractTag :: Text -> IO (Maybe Value) -> IO (Maybe String)
 extractTag tag obj = do
     value <- obj
-    let res = (value ^. key "data" . key tag :: Maybe String) in print value >> return res
+    let res = (value ^. key "data" . key tag :: Maybe String) in return res
 
 extractRateStatus :: IO (Maybe Value) -> IO (Maybe String)
 extractRateStatus =  extractTag "status"
@@ -24,7 +24,7 @@ extractRateStatus =  extractTag "status"
 extractRateSymbol :: IO (Maybe Value) -> IO (Maybe String)
 extractRateSymbol obj = do
     value <- obj
-    let res = (value ^. key "data" . nth 0 . key "symbol" :: Maybe String) in print value >> return res
+    let res = (value ^. key "data" . nth 0 . key "symbol" :: Maybe String) in return res
 
 extractOrderBooksSymbol :: IO (Maybe Value) -> IO (Maybe String)
 extractOrderBooksSymbol =  extractTag "symbol"

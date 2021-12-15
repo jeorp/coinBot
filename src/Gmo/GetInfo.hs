@@ -2,7 +2,8 @@
 {-# LANGUAGE OverloadedStrings #-}  
 {-# LANGUAGE Rank2Types #-}
 
-module Gmo.GetInfo where
+module Gmo.GetInfo (getPrivateInfo, getMargin, getAssets, getOrders,
+                    getActiveOrder, getLatestExecutions) where
 import Common
 import Control.Lens
 
