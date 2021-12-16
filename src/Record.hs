@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, TypeOperators, FlexibleContexts #-}
-{-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
+{-# LANGUAGE OverloadedLabels  #-}
 {-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
 
 module Record () where
