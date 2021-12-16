@@ -27,10 +27,10 @@ library
   exposed-modules:
       Bot.Reply
       Common
-      Extensible
       GetToken
       Gmo.GetInfo
       Gmo.RestApi
+      Redords
       Run
   other-modules:
       Paths_coinBot
