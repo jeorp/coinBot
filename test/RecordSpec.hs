@@ -25,6 +25,14 @@ type Animal' = Record
   , "cry" :> Maybe String
   ]
 
+type Point = Record
+  [ "x" :> Float,
+    "y" :> Float
+  ]
+
+p :: Point 
+p = #x @= 1.2 <: #y @= 0.12 <: emptyRecord
+
 dove :: Animal
 dove = #name @= "dove"
   <: #collective @= "dule"
@@ -73,6 +81,6 @@ spec = do
         it "test exists json instance'" $ do
             decode "{\"name\": \"dove\", \"collective\": \"dule\", \"cry\": \"coo\"}"  `shouldBe` Just dove
 
-      describe "test encode" $ do
-        it "test decode . encode = id" $ do
-            decode (encode dove)  `shouldBe` Just dove    
+      describe "test encode float" $ do
+        it "decode eq p" $ do
+            decode  "{\"x\": 1.2, \"y\": 0.12}" `shouldBe` Just p    
