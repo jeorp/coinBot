@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, TypeOperators, FlexibleContexts #-}
+{-# LANGUAGE OverloadedLabels  #-}
 {-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
 module RecordSpec where
 
@@ -8,7 +9,7 @@ import Test.Hspec
 import Data.Extensible
 import Control.Lens hiding ((:>))
 
-mkField "name collective cry"
+--mkField "name collective cry"
 
 type Animal = Record
   [ "name" :> String
@@ -16,32 +17,51 @@ type Animal = Record
   , "cry" :> Maybe String
   ]
 
+type Animal' = Record
+  [ "name" :> String
+  , "cry" :> Maybe String
+  ]
+
 dove :: Animal
-dove = name @= "dove"
-  <: collective @= "dule"
-  <: cry @= Just "coo"
-  <: nil
+dove = #name @= "dove"
+  <: #collective @= "dule"
+  <: #cry @= Just "coo"
+  <: emptyRecord
+
+dove' :: Animal'
+dove' = #name @= "dove"
+  <: #cry @= Just "coo"
+  <: emptyRecord
 
 swan :: Animal
-swan = name @= "swan"
-  <: collective @= "lamentation"
-  <: cry @= Nothing
-  <: nil
+swan = #name @= "swan"
+  <: #collective @= "lamentation"
+  <: #cry @= Nothing
+  <: emptyRecord
 
-collectiveOf :: Animal -> String
-collectiveOf a = unwords ["a", a ^. collective, "of", a ^. name ++ "s"]
+collectiveOf :: (Associated s ("name" ':> String), Associated s ("collective" ':> String))
+  => Record s -> String
+collectiveOf a = unwords ["a", a ^. #collective, "of", a ^. #name ++ "s"]
 
 main :: IO ()
 main = hspec spec 
 
 spec :: Spec
 spec = do 
-    describe "Test Record" $ do
+    describe "Test Record Sample" $ do
       
       describe "test swan name" $ do
         it "swan name is swan" $ do
-            swan ^. name `shouldBe` "swan" 
+            swan ^. #name `shouldBe` "swan"
+
+      describe "test dove' name" $ do
+        it "dove' name is dove" $ do
+            dove' ^. #name `shouldBe` "dove" 
 
       describe "test collectiveOf" $ do
         it "apply swan" $ do
           collectiveOf swan `shouldBe` "a lamentation of swans"
+
+      describe "test shrink" $ do
+        it "shrink dove = dove'" $ do
+            shrink dove  `shouldBe` dove' 
