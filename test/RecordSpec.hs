@@ -1,5 +1,6 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, TypeOperators, FlexibleContexts #-}
 {-# LANGUAGE OverloadedLabels  #-}
+{-# LANGUAGE OverloadedStrings  #-}
 {-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
 module RecordSpec where
 
@@ -9,6 +10,8 @@ import Test.Hspec
 import Data.Extensible
 import Control.Lens hiding ((:>))
 
+import qualified Data.ByteString as B 
+import Data.Aeson
 --mkField "name collective cry"
 
 type Animal = Record
@@ -64,4 +67,12 @@ spec = do
 
       describe "test shrink" $ do
         it "shrink dove = dove'" $ do
-            shrink dove  `shouldBe` dove' 
+            shrink dove  `shouldBe` dove'
+
+      describe "test decode from json" $ do
+        it "test exists json instance'" $ do
+            decode "{\"name\": \"dove\", \"collective\": \"dule\", \"cry\": \"coo\"}"  `shouldBe` Just dove
+
+      describe "test encode" $ do
+        it "test decode . encode = id" $ do
+            decode (encode dove)  `shouldBe` Just dove    
