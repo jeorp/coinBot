@@ -30,7 +30,7 @@ library
       GetToken
       Gmo.GetInfo
       Gmo.RestApi
-      Redords
+      Record
       Run
   other-modules:
       Paths_coinBot
@@ -112,6 +112,7 @@ test-suite coinBot-test
   other-modules:
       Gmo.GetInfoSpec
       Gmo.RestApiSpec
+      RecordSpec
       Paths_coinBot
   hs-source-dirs:
       test
