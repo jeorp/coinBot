@@ -39,7 +39,7 @@ spec = do
     describe "test Gmo.ToRecord" $ do
       describe "test extractRate" $ do
         it "fist Rate symbol is BTC" $ do
-          testRateFirstSymbol extractRate `shouldReturn` "BTC"
+          testRateFirstSymbol (extractRate Nothing) `shouldReturn` "BTC"
 
       describe "test extractRates" $ do
         it "all Rates is .." $ do

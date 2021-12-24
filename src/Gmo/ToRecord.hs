@@ -36,9 +36,9 @@ extractTraversal obj = do
         xs = fromMaybe V.empty val
         in return xs
 
-extractRate :: IO (Maybe Rate)
-extractRate = do
-  mval <- extractFirstTag $ getRates Nothing
+extractRate :: (Maybe Coin) -> IO (Maybe Rate)
+extractRate c = do
+  mval <- extractFirstTag $ getRates c
   let val = encode $ fromMaybe Null mval :: B.ByteString
   pure $ decode val
 
