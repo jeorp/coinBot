@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Bot.Reply
+      Command
       Common
       GetToken
       Gmo.GetInfo

@@ -17,7 +17,7 @@ configFile = "config.env"
 type GMOToken = (B.ByteString, B.ByteString)
 
 data Coin = BTC | ETH | BCH | LTC | XRP | XEM | XLM | XYM | MONA |
-          BTC_JPY | ETH_JPY | BCH_JPY | LTC_JPY | XRP_JPY deriving (Show, Eq, Generic)
+          BTC_JPY | ETH_JPY | BCH_JPY | LTC_JPY | XRP_JPY deriving (Eq, Ord, Enum, Show, Bounded, Generic)
 
 instance FromJSON Coin
 instance ToJSON Coin
