@@ -3,7 +3,7 @@
 {-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
 
 module Record (Rate(..), Trades(..), Kline(..), Margin(..), Assets(..), 
-                Order(..), Execution(..) 
+                Order(..), Execution(..), symbol
 ) where
 
 import Data.Extensible
@@ -20,6 +20,9 @@ type Rate = Record
     "timestamp" :> Text,
     "volume" :> Text
   ]
+
+symbol :: Associated s ("symbol" ':> Text) => Lens' (Record s) Text
+symbol = #symbol
 
 type Trades = Record
   [ "price" :> Text,

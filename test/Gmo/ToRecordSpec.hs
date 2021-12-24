@@ -14,43 +14,22 @@ import Data.Maybe
 import qualified Data.Vector as V  
 import Data.Aeson
 import Data.Aeson.Lens
-import Record
+import Record (symbol, Rate(..))
 import Common
 import Gmo.RestApi
+import Gmo.ToRecord
 
 
-extractTag :: Text -> IO (Maybe Value) -> IO (Maybe Value)
-extractTag tag obj = do
-    val <- obj
-    let value = fromMaybe Null val :: Value
-        res = (value ^? key "data" . key tag . _Value) in return res
+testRateFirstSymbol :: IO (Maybe Rate) -> IO Text
+testRateFirstSymbol io = do
+  mr <- io
+  let s = maybe "" (^. symbol) mr
+  return s
 
-extractFirstTag :: IO (Maybe Value) -> IO (Maybe Value)
-extractFirstTag obj = do
-    val <- obj
-    let value = fromMaybe Null val :: Value
-        res = (value ^? key "data" . nth 0 . _Value) in return res
-
-extractTraversal :: IO (Maybe Value) -> IO (V.Vector Value)
-extractTraversal obj = do
-    value <- obj
-    let val = fromMaybe Null value ^? key "data" . _Array
-        xs = fromMaybe V.empty val
-        in return xs
-
-extractRate :: IO (Maybe Rate)
-extractRate = do
-  mval <- extractFirstTag $ getRates Nothing
-  let val = encode $ fromMaybe Null mval :: B.ByteString
-  pure $ decode val
-
-extractRates :: IO (V.Vector Rate)
-extractRates =do
-  mval <- extractTraversal $ getRates Nothing
-  let xs = decode . encode <$> mval :: (V.Vector (Maybe Rate))
-  pure $ V.catMaybes xs
-
-
+testRatesAllSymbol :: IO (V.Vector Rate) -> IO (V.Vector Text)
+testRatesAllSymbol io = do
+  v <- io
+  return $ (^. symbol) <$> v
 
 main :: IO ()
 main = hspec spec
@@ -60,8 +39,10 @@ spec = do
     describe "test Gmo.ToRecord" $ do
       describe "test extractRate" $ do
         it "fist Rate symbol is BTC" $ do
-          extractRate `shouldReturn` Nothing
+          testRateFirstSymbol extractRate `shouldReturn` "BTC"
 
       describe "test extractRates" $ do
         it "all Rates is .." $ do
-          extractRates `shouldReturn` V.empty
+          testRatesAllSymbol extractRates 
+            `shouldReturn` 
+            V.fromList ["BTC","ETH","BCH","LTC","XRP","XEM","XLM","BTC_JPY","ETH_JPY","BCH_JPY","LTC_JPY","XRP_JPY","XYM","MONA"]
