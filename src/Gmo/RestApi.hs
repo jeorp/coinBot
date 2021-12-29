@@ -8,24 +8,21 @@ import Common
 import Control.Lens
 
 import           Data.Aeson                 (Value)
-import qualified Data.ByteString.Lazy.Char8 as S8
-import qualified Data.ByteString.Char8 as SB
+
 import           Network.HTTP.Simple
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as BS
 
 
 --makeLenses
 
 
-checkStatus :: IO (Maybe Value)
+checkStatus :: IO B.ByteString
 checkStatus = do
-  response <- httpJSON "https://api.coin.z.com/public/v1/status"
-  pure (getResponseBody response :: Maybe Value)
+  response <- httpBS "https://api.coin.z.com/public/v1/status"
+  pure $ getResponseBody response
 
-
-show' :: forall a. Show a=> a -> Maybe SB.ByteString 
-show' = Just . SB.pack . show
-
-getApi :: String -> Query ->IO (Maybe Value)
+getApi :: String -> Query ->IO B.ByteString
 getApi url query = do
   request' <- parseRequest url
   let request
@@ -34,33 +31,33 @@ getApi url query = do
         $ setRequestPort 443
         $ setRequestQueryString query
         $ request'
-  response <- httpJSON request
-  pure (getResponseBody response :: Maybe Value)
+  response <- httpBS request
+  pure $ getResponseBody response
 
-getRates :: Maybe Coin -> IO (Maybe Value)
+getRates :: Maybe Coin -> IO B.ByteString
 getRates coin = 
     let url = baseUrl <> "public/v1/ticker"
-        query = [("symbol", SB.pack . show <$> coin)] :: Query
+        query = [("symbol", BS.pack . show <$> coin)] :: Query
         in getApi url query
 
-getOrderBooks :: Coin -> IO (Maybe Value)
+getOrderBooks :: Coin -> IO B.ByteString
 getOrderBooks coin = 
     let url = baseUrl <> "public/v1/orderbooks"
-        query = [("symbol", show' coin)] :: Query
+        query = [("symbol", (Just . BS.pack . show) coin)] :: Query
         in getApi url query
 
-getTrades :: Coin -> Int -> Int -> IO (Maybe Value) 
+getTrades :: Coin -> Int -> Int -> IO B.ByteString
 getTrades coin page limit =
     let url = baseUrl <> "public/v1/trades"
-        query =  [("symbol", show' coin),
-            ("page", show' page), ("count", show' limit)]
+        query =  [("symbol", (Just . BS.pack . show) coin),
+            ("page", (Just . BS.pack . show) page), ("count", (Just . BS.pack . show) limit)]
         in getApi url query
 
-getKlines :: Coin -> String -> String -> IO (Maybe Value) 
+getKlines :: Coin -> String -> String -> IO B.ByteString
 getKlines coin interval date =
     let url = baseUrl <> "public/v1/klines"
-        query =  [("symbol", show' coin),
-            ("interval", show' interval), ("date", show' date)]
+        query =  [("symbol", (Just . BS.pack . show) coin),
+            ("interval", (Just . BS.pack . show) interval), ("date", (Just . BS.pack . show) date)]
         in getApi url query
 
 

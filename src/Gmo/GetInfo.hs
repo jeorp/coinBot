@@ -27,7 +27,7 @@ endPoint = baseUrl <> "private"
 show' :: forall a. Show a=> a -> Maybe BS.ByteString 
 show' = Just . BS.pack . show
 
-getPrivateInfo :: S.String -> Query -> GMOToken -> IO (Maybe Value)
+getPrivateInfo :: S.String -> Query -> GMOToken -> IO B.ByteString 
 getPrivateInfo path query api = do
   posixTime <- getPOSIXTime
   let epochTime = BS.pack . show . round $ posixTime
@@ -45,26 +45,26 @@ getPrivateInfo path query api = do
         $ setRequestHeader "API-SIGN" [sign]
         $ setRequestQueryString query
         $ request'
-  response <- httpJSON request
-  pure (getResponseBody response :: Maybe Value)
+  response <- httpBS request
+  pure $ getResponseBody response
 
-getMargin :: GMOToken -> IO (Maybe Value)
+getMargin :: GMOToken -> IO B.ByteString 
 getMargin = getPrivateInfo "/v1/account/margin" []
 
-getAssets :: GMOToken -> IO (Maybe Value)
+getAssets :: GMOToken -> IO B.ByteString 
 getAssets = getPrivateInfo "/v1/account/assets" []
 
-getOrders :: [Integer] -> GMOToken -> IO (Maybe Value)
+getOrders :: [Integer] -> GMOToken -> IO B.ByteString
 getOrders ids = 
       let query = B.intercalate "," . map (BS.pack . show) :: ([Integer] -> B.ByteString)
       in getPrivateInfo "/v1/orders" [("orderId", Just $ query ids)]
 
-getActiveOrder :: Coin -> Int -> Int -> GMOToken -> IO (Maybe Value)
+getActiveOrder :: Coin -> Int -> Int -> GMOToken -> IO B.ByteString
 getActiveOrder coin page count = 
       let query = [("order", show' coin), ("page", show' page), ("count", show' count)] 
       in getPrivateInfo "/v1/account/assets" []
 
-getLatestExecutions :: Coin -> Int -> Int -> GMOToken -> IO (Maybe Value)
+getLatestExecutions :: Coin -> Int -> Int -> GMOToken -> IO B.ByteString
 getLatestExecutions coin page count = 
       let query = [("order", show' coin), ("page", show' page), ("count", show' count)]
       in getPrivateInfo "/v1/latetExecutions" query
