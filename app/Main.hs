@@ -10,7 +10,7 @@ import Control.Concurrent
 import Control.Exception
 
 main :: IO ()
-main = pingpongExample
+main = broadcast
 
 
 

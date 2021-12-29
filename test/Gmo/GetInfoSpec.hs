@@ -12,6 +12,7 @@ import Data.Aeson.Lens
 import Data.Aeson
 import Control.Lens
 import Control.Arrow
+import Data.Maybe
 import GetToken
 import Common
 makeLenses ''Config
@@ -27,22 +28,24 @@ gmoToken = do
   bb <- either (const ("", ""))  ((^. api_token) &&& (^. api_token_secret)) <$> extract
   pure $ both %~ textToByteString $ bb
 
-extractTag :: Text -> IO (Maybe Value) -> IO (Maybe String)
+extractTag :: Text -> IO (Maybe Value) -> IO (Maybe Text)
 extractTag tag obj = do
-    value <- obj
-    let res = (value ^. key "data" . key tag :: Maybe String) in print value >> return res
+    val <- obj
+    let value = fromMaybe Null val :: Value
+        res = (value ^? key "data" . key tag . _String) in return res
 
-extractFirstTag :: Text -> IO (Maybe Value) -> IO (Maybe String)
+extractFirstTag :: Text -> IO (Maybe Value) -> IO (Maybe Text)
 extractFirstTag tag obj = do
-    value <- obj
-    let res = (value ^. key "data" . nth 0 . key tag :: Maybe String) in return res
+    val <- obj
+    let value = fromMaybe Null val :: Value
+        res = (value ^? key "data" . nth 0 . key tag . _String) in return res
 
-getMarginCallStatus :: IO (Maybe String)
+getMarginCallStatus :: IO (Maybe Text)
 getMarginCallStatus = do
   token <- gmoToken
   extractTag "marginCallStatus" (getMargin token)
 
-getAssetsSymbol :: IO (Maybe String)
+getAssetsSymbol :: IO (Maybe Text)
 getAssetsSymbol = do
   token <- gmoToken
   extractFirstTag "symbol" (getAssets token)
