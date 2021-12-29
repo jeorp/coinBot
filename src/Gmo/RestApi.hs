@@ -15,7 +15,8 @@ import qualified Data.ByteString.Char8 as BS
 
 
 --makeLenses
-
+show' :: forall a. Show a=> a -> Maybe BS.ByteString 
+show' = Just . BS.pack . show
 
 checkStatus :: IO B.ByteString
 checkStatus = do
@@ -43,21 +44,21 @@ getRates coin =
 getOrderBooks :: Coin -> IO B.ByteString
 getOrderBooks coin = 
     let url = baseUrl <> "public/v1/orderbooks"
-        query = [("symbol", (Just . BS.pack . show) coin)] :: Query
+        query = [("symbol", show' coin)] :: Query
         in getApi url query
 
 getTrades :: Coin -> Int -> Int -> IO B.ByteString
 getTrades coin page limit =
     let url = baseUrl <> "public/v1/trades"
-        query =  [("symbol", (Just . BS.pack . show) coin),
-            ("page", (Just . BS.pack . show) page), ("count", (Just . BS.pack . show) limit)]
+        query =  [("symbol", show' coin),
+            ("page", show' page), ("count", show' limit)]
         in getApi url query
 
 getKlines :: Coin -> String -> String -> IO B.ByteString
 getKlines coin interval date =
     let url = baseUrl <> "public/v1/klines"
-        query =  [("symbol", (Just . BS.pack . show) coin),
-            ("interval", (Just . BS.pack . show) interval), ("date", (Just . BS.pack . show) date)]
+        query =  [("symbol", show' coin),
+            ("interval", show' interval), ("date", show' date)]
         in getApi url query
 
 

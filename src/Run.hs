@@ -6,12 +6,14 @@ module Run where
 
 import Control.Monad.Reader
 import Control.Monad.State
-import Control.Lens
+import Data.Extensible
+import Control.Lens hiding ((:>))
+
 import Common
+import Record
 import GetToken
 import Bot.Reply
-import Gmo.GetInfo
-import Gmo.RestApi
+import Gmo.ToRecord
 
 
 main :: IO ()
