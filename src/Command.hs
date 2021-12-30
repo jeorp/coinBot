@@ -12,9 +12,9 @@
 module Command where
 
 import Data.Monoid
-import Data.Extensible
+
 import Control.Arrow
-import Control.Lens hiding ((:>))
+import Control.Lens
 import Data.Proxy
 import GHC.TypeLits
 import Data.Default.Class
