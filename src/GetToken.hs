@@ -34,4 +34,5 @@ configParser = Config <$>
             gmoApiSecretLable
 
 
+extract :: IO (Either String Config)
 extract = parseOnly configParser <$> readFile configFile 
