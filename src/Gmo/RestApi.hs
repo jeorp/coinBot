@@ -33,6 +33,7 @@ getApi url query = do
         $ setRequestQueryString query
         $ request'
   response <- httpBS request
+  print response
   pure $ getResponseBody response
 
 getRates :: Maybe Coin -> IO B.ByteString
@@ -58,7 +59,7 @@ getKlines :: Coin -> String -> String -> IO B.ByteString
 getKlines coin interval date =
     let url = baseUrl <> "public/v1/klines"
         query =  [("symbol", show' coin),
-            ("interval", show' interval), ("date", show' date)]
+            ("interval", Just $ BS.pack interval), ("date", Just $ BS.pack date)]
         in getApi url query
 
 

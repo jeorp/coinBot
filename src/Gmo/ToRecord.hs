@@ -46,9 +46,16 @@ extractRate c = do
   pure $ decode val
 
 extractRates :: IO (V.Vector Rate)
-extractRates =do
+extractRates = do
   mval <- extractTraversal $ getRates Nothing
   let xs = decode . encode <$> mval :: (V.Vector (Maybe Rate))
+  pure $ V.catMaybes xs
+
+extractKlines :: Coin -> String -> String -> IO (V.Vector Kline)
+extractKlines c interval date = do
+  mval <- extractTraversal $ getKlines c interval date
+  let xs = decode . encode <$> mval :: (V.Vector (Maybe Kline))
+  print xs
   pure $ V.catMaybes xs
 
 

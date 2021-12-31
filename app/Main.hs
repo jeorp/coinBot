@@ -6,9 +6,10 @@ import App.Notate
 import Gmo.ToRecord
 import Gmo.WsApi
 import Common
+import qualified Data.Vector as V
 
 main :: IO ()
-main = broadcast
+main = extractKlines BTC "1hour" "20211120" >>= print
 
 
 
