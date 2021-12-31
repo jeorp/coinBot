@@ -1,21 +1,79 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DataKinds, TypeOperators, FlexibleContexts #-}
+{-# LANGUAGE OverloadedLabels  #-}
+{-# LANGUAGE OverloadedStrings  #-}
+{-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
 {-# LANGUAGE OverloadedStrings #-} 
 {-# LANGUAGE Rank2Types #-}
 
-module Run (app) where
+module Run where
 
-import Control.Monad.Reader
-import Control.Monad.State
 import Data.Extensible
 import Control.Lens hiding ((:>))
 
 import Common
+import GetToken
 import Command
 import Record
-import GetToken
-import Bot.Reply
 import Gmo.ToRecord
+import Control.Monad
+import Control.Monad.Trans
+import Data.Maybe
+import Data.Monoid
+import qualified Data.Vector as V
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
+import UnliftIO.Concurrent
+
+import Discord
+import Discord.Types
+import qualified Discord.Requests as R
 
 
-app :: IO ()
-app = pure ()
+fromBot :: Message -> Bool
+fromBot = userIsBot . messageAuthor
+
+broadcast :: IO ()
+broadcast = do
+    config <- extract
+    let discordToken = either (const "") (^. bot_token) config :: T.Text 
+    userFacingError <- runDiscord $ def 
+      { discordToken = discordToken, discordOnEvent = handler }
+    TIO.putStrLn userFacingError
+
+handler :: Event -> DiscordHandler ()
+handler (MessageCreate m) = do
+  unless (fromBot m) (doBroad m)
+handler _ = return ()
+
+
+
+doBroad :: Message -> DiscordHandler ()
+doBroad m = do
+  let input = T.unpack (messageText m)
+      isCoinSelect = getLast $ lookupFromRegisteredA input (def :: Coin)
+      isAllSelect = getLast $ lookupFromRegisteredA input (def :: ALL)
+
+  when (isJust isCoinSelect) $ replyCoinRate $ fromMaybe def isCoinSelect 
+  when (isJust isAllSelect) replyAllRates
+  {-   void $ restCall (R.CreateReaction (messageChannel m, messageId m) "eyes")
+       threadDelay (1 * 10^6) -}
+  where
+    replyCoinRate :: Coin -> DiscordHandler ()
+    replyCoinRate c = do
+      rate <-liftIO $ extractRate $ Just c
+      case rate of
+        Just r -> do
+          void $ do
+            restCall (R.CreateMessage (messageChannel m) $ rateToText r)
+        _ -> do
+          void $ restCall (R.CreateReaction (messageChannel m, messageId m) "eyes")
+          threadDelay (1 * 10^6)
+          void $ restCall (R.CreateMessage (messageChannel m) "Can not get rate .. ")
+      return ()
+    
+    replyAllRates :: DiscordHandler ()
+    replyAllRates = do
+      rates <- liftIO extractRates
+      if V.null rates
+        then void $ restCall (R.CreateMessage (messageChannel m) "Can not get rates .. ")
+        else V.mapM_ (void . restCall . R.CreateMessage (messageChannel m) . rateToText) rates

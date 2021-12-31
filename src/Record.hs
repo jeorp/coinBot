@@ -8,6 +8,7 @@ module Record  where
 import Data.Extensible
 import Control.Lens hiding ((:>))
 import Data.Text
+import Data.Proxy
 
 type Rate = Record
   [ "ask" :> Text,
@@ -19,6 +20,20 @@ type Rate = Record
     "timestamp" :> Text,
     "volume" :> Text
   ]
+
+
+rateToText :: Rate -> Text
+rateToText r = intercalate "\n" 
+                [
+                  "symbol : " <> r ^. #symbol,
+                  "ask : " <> r ^. #ask,
+                  "bid : " <> r ^. #bid,
+                  "high : " <> r ^. #high,
+                  "last : " <> r ^. #last,
+                  "low : " <> r ^. #low,
+                  "timestamp : " <> r ^. #timestamp,
+                  "volume : " <> r ^. #volume
+                ]
 
 type Trades = Record
   [ "price" :> Text,

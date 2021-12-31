@@ -8,6 +8,7 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Command where
 
@@ -17,6 +18,7 @@ import Control.Arrow
 import Control.Lens
 import Data.Default.Class
 import Data.Monoid
+import Data.List
 import Data.Proxy
 import GHC.TypeLits
 
@@ -65,7 +67,16 @@ instance Registered "ltc_jpy" where
 instance Registered "xrp_jpy" where
   command _ = "XRP_JPY"
 
+instance Registered "all" where
+  command _ = "All"
 
+data ALL = ALL deriving (Show, Eq)
+
+all_ :: Lens' ALL ALL 
+all_ = lens (const ALL) (const id)
+
+instance Default ALL where
+  def = ALL
 
 data Command' s a = forall l. (KnownSymbol l, Registered l) => Relate (Lens' s a) (Proxy l)
 
@@ -98,8 +109,53 @@ instance CommandObj Coin Coin where
   symbols = 
     [
       Relate btc_ (Proxy :: Proxy "btc"), 
-      Relate eth_ (Proxy :: Proxy "eth")
+      Relate eth_ (Proxy :: Proxy "eth"),
+      Relate bch_ (Proxy :: Proxy "bch"),
+      Relate ltc_ (Proxy :: Proxy "ltc"),
+      Relate xrp_ (Proxy :: Proxy "xrp"),
+      Relate xem_ (Proxy :: Proxy "xem"),
+      Relate xlm_ (Proxy :: Proxy "xlm"),
+      Relate xym_ (Proxy :: Proxy "xym"),
+      Relate mona_ (Proxy :: Proxy "mona"),
+      Relate btc_jpy_ (Proxy :: Proxy "btc_jpy"),
+      Relate eth_jpy_ (Proxy :: Proxy "eth_jpy"),
+      Relate bch_jpy_ (Proxy :: Proxy "bch_jpy"),
+      Relate ltc_jpy_ (Proxy :: Proxy "ltc_jpy"),
+      Relate xrp_jpy_ (Proxy :: Proxy "xrp_jpy")
     ]
     
   lookupRegistered = lookupRegisteredSS symbols
   lookupFromRegisteredA = lookupFromRegisteredSS symbols
+
+
+instance CommandObj ALL ALL where
+  symbols = 
+    [
+      Relate all_ (Proxy :: Proxy "all")
+    ]
+    
+  lookupRegistered = lookupRegisteredSS symbols
+  lookupFromRegisteredA = lookupFromRegisteredSS symbols
+
+data Descriptor s = 
+  Descriptor 
+  {
+    _tag :: String,
+    _elem :: s 
+  } deriving Eq
+
+makeLenses ''Descriptor
+
+commandPrint :: String -> String -> String
+commandPrint a b = a <> ": " <> b
+
+instance (Show s, CommandObj s a) => Show (Descriptor [s]) where
+  show (Descriptor t xs) = t <> enum xs  
+    where
+      enum xs = intercalate " or " (uncurry commandPrint  . (maybe ("", "") head . getLast . lookupRegistered) <$> xs) 
+
+class Description d where
+  descript :: d -> Descriptor d 
+
+instance Description [Coin] where
+  descript = Descriptor "Coin - " 

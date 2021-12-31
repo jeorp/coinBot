@@ -7,6 +7,7 @@ import Control.Lens
 import Data.Text (Text)
 import qualified Data.ByteString as B
 import Data.Aeson
+import Data.Default.Class
 import GHC.Generics
 
 baseUrl = "https://api.coin.z.com/"
@@ -16,6 +17,12 @@ type GMOToken = (B.ByteString, B.ByteString)
 
 data Coin = BTC | ETH | BCH | LTC | XRP | XEM | XLM | XYM | MONA |
           BTC_JPY | ETH_JPY | BCH_JPY | LTC_JPY | XRP_JPY deriving (Eq, Ord, Enum, Show, Bounded, Generic)
+
+instance FromJSON Coin
+instance ToJSON Coin
+
+instance Default Coin where
+  def = BTC
 
 
 btc_ :: Lens' Coin Coin
@@ -61,9 +68,6 @@ xrp_jpy_ :: Lens' Coin Coin
 xrp_jpy_ = lens (const XRP_JPY) (const id)
 
 
-instance FromJSON Coin
-instance ToJSON Coin
-
 data Side = BUY | SELL deriving (Show, Eq, Generic)
 
 instance FromJSON Side
@@ -85,6 +89,8 @@ data Config = Config {
   _api_token :: Text,
   _api_token_secret :: Text
 }deriving (Show, Eq, Generic)
+
+makeLenses ''Config
 
 instance FromJSON Config
 instance ToJSON Config
