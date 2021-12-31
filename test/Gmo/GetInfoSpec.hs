@@ -15,7 +15,6 @@ import Control.Arrow
 import Data.Maybe
 import GetToken
 import Common
-makeLenses ''Config
 
 main :: IO ()
 main = hspec spec
