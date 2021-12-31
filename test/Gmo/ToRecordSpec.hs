@@ -14,7 +14,7 @@ import Data.Maybe
 import qualified Data.Vector as V  
 import Data.Aeson
 import Data.Aeson.Lens
-import Record (symbol, Rate(..))
+import Record
 import Common
 import Gmo.RestApi
 import Gmo.ToRecord
@@ -23,13 +23,13 @@ import Gmo.ToRecord
 testRateFirstSymbol :: IO (Maybe Rate) -> IO Text
 testRateFirstSymbol io = do
   mr <- io
-  let s = maybe "" (^. symbol) mr
+  let s = maybe "" (^. #symbol) mr
   return s
 
 testRatesAllSymbol :: IO (V.Vector Rate) -> IO (V.Vector Text)
 testRatesAllSymbol io = do
   v <- io
-  return $ (^. symbol) <$> v
+  return $ (^. #symbol) <$> v
 
 main :: IO ()
 main = hspec spec

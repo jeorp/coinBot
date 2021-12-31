@@ -8,6 +8,7 @@ import Data.Aeson
 
 import Control.Lens
 import Data.Text
+import qualified Data.ByteString as B 
 import qualified Data.Vector as V
 import Data.Maybe
 import Common
@@ -15,37 +16,34 @@ import Common
 main :: IO ()
 main = hspec spec
 
-extractTag :: Text -> IO (Maybe Value) -> IO (Maybe Text)
+extractTag :: Text -> IO B.ByteString -> IO (Maybe Text)
 extractTag tag obj = do
     val <- obj
-    let value = fromMaybe Null val :: Value
-        res = (value ^? key "data" . key tag . _String) in return res
+    let res = (val ^? key "data" . key tag . _String) in return res
 
-extractFirstTag :: Text -> IO (Maybe Value) -> IO (Maybe Text)
+extractFirstTag :: Text -> IO B.ByteString -> IO (Maybe Text)
 extractFirstTag tag obj = do
     val <- obj
-    let value = fromMaybe Null val :: Value
-        res = (value ^? key "data" . nth 0 . key tag . _String) in return res
+    let res = (val ^? key "data" . nth 0 . key tag . _String) in return res
 
-extractTraversalOneElement :: Text -> IO (Maybe Value) -> IO (V.Vector Text)
+extractTraversalOneElement :: Text -> IO B.ByteString -> IO (V.Vector Text)
 extractTraversalOneElement tag obj = do
     value <- obj
-    let val = fromMaybe Null value ^? key "data" . _Array
+    let val = value ^? key "data" . _Array
         symbols = fmap (^? key "symbol" . _String) (fromMaybe V.empty val)
         xs = V.catMaybes symbols
-      
-        in return xs
+      in return xs
 
-extractRateStatus :: IO (Maybe Value) -> IO (Maybe Text)
+extractRateStatus :: IO B.ByteString -> IO (Maybe Text)
 extractRateStatus =  extractTag "status"
 
-extractRateSymbol :: IO (Maybe Value) -> IO (Maybe Text)
+extractRateSymbol :: IO B.ByteString -> IO (Maybe Text)
 extractRateSymbol = extractFirstTag "symbol" 
 
-extractRateSymbols :: IO (Maybe Value) -> IO (V.Vector Text)
+extractRateSymbols :: IO B.ByteString -> IO (V.Vector Text)
 extractRateSymbols = extractTraversalOneElement "symbol" 
 
-extractOrderBooksSymbol :: IO (Maybe Value) -> IO (Maybe Text)
+extractOrderBooksSymbol :: IO B.ByteString -> IO (Maybe Text)
 extractOrderBooksSymbol =  extractTag "symbol"
 
 spec :: Spec

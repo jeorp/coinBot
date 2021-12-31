@@ -28,17 +28,15 @@ gmoToken = do
   bb <- either (const ("", ""))  ((^. api_token) &&& (^. api_token_secret)) <$> extract
   pure $ both %~ textToByteString $ bb
 
-extractTag :: Text -> IO (Maybe Value) -> IO (Maybe Text)
+extractTag :: Text -> IO B.ByteString -> IO (Maybe Text)
 extractTag tag obj = do
     val <- obj
-    let value = fromMaybe Null val :: Value
-        res = (value ^? key "data" . key tag . _String) in return res
+    let res = (val ^? key "data" . key tag . _String) in return res
 
-extractFirstTag :: Text -> IO (Maybe Value) -> IO (Maybe Text)
+extractFirstTag :: Text -> IO B.ByteString -> IO (Maybe Text)
 extractFirstTag tag obj = do
     val <- obj
-    let value = fromMaybe Null val :: Value
-        res = (value ^? key "data" . nth 0 . key tag . _String) in return res
+    let res = (val ^? key "data" . nth 0 . key tag . _String) in return res
 
 getMarginCallStatus :: IO (Maybe Text)
 getMarginCallStatus = do

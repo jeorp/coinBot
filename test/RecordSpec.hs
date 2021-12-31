@@ -12,7 +12,8 @@ import Control.Lens hiding ((:>))
 
 import qualified Data.ByteString as B 
 import Data.Aeson
---mkField "name collective cry"
+
+import Record
 
 type Animal = Record
   [ "name" :> String
@@ -50,6 +51,18 @@ swan = #name @= "swan"
   <: #cry @= Nothing
   <: emptyRecord
 
+exRate :: Rate
+exRate = #ask @= "ask"
+  <: #bid @= "bid"
+  <: #high @= ""
+  <: #last @= ""
+  <: #low @= ""
+  <: #symbol @= ""
+  <: #timestamp @= ""
+  <: #volume @= ""
+  <: emptyRecord
+
+
 collectiveOf :: (Associated s ("name" ':> String), Associated s ("collective" ':> String))
   => Record s -> String
 collectiveOf a = unwords ["a", a ^. #collective, "of", a ^. #name ++ "s"]
@@ -83,4 +96,8 @@ spec = do
 
       describe "test encode float" $ do
         it "decode eq p" $ do
-            decode  "{\"x\": 1.2, \"y\": 0.12}" `shouldBe` Just p    
+            decode  "{\"x\": 1.2, \"y\": 0.12}" `shouldBe` Just p
+
+      describe "check lens from import " $ do
+        it "ask of exRate is ask" $ do
+          exRate ^. #ask `shouldBe` "ask" 

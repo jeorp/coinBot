@@ -40,7 +40,7 @@ dependencies:
 - time
 - safe-exceptions
 - lens
-- pipes
+- data-default-class
 - attoparsec
 - websockets
 - http-client
