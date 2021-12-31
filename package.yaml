@@ -47,6 +47,9 @@ dependencies:
 - http-conduit
 - wuss
 - network
+- sqlite-simple
+- redis
+- amqp
 - hspec
 - QuickCheck
 library:

@@ -67,9 +67,16 @@ packages:
       sha256: 635bbbb517f0c063a4bc2e9e6efdb0e598b9d9fd467f52df81ab3a4af1fd923b
   original:
     hackage: semialign-1.2.0.1
+- completed:
+    hackage: redis-0.14.2@sha256:246b7286193379d23ac40797d97a129521bad67941c292f118e0fcc6b212f106,3252
+    pantry-tree:
+      size: 1821
+      sha256: 6aa537c744f0e83ed041bf39ecb13f52e4fb940b0cc75430a6ae75c8d0894dcb
+  original:
+    hackage: redis-0.14.2
 snapshots:
 - completed:
-    size: 587113
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/6.yaml
-    sha256: f74c482d7c93739ecf3abfbc0f2dea1c20a2dfb2462c689846ed55a9653b66f7
-  original: lts-18.6
+    size: 586286
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/16.yaml
+    sha256: cdead65fca0323144b346c94286186f4969bf85594d649c49c7557295675d8a5
+  original: lts-18.16

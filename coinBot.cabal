@@ -35,7 +35,10 @@ library
       Gmo.ToRecord
       Gmo.WsApi
       Notate
+      Rabbit
       Record
+      Redis
+      StoreSql
   other-modules:
       Paths_coinBot
   hs-source-dirs:
@@ -44,6 +47,7 @@ library
       QuickCheck
     , aeson
     , aeson-qq
+    , amqp
     , attoparsec
     , base >=4.7 && <5
     , base16-bytestring
@@ -61,7 +65,9 @@ library
     , lens-aeson
     , mtl
     , network
+    , redis
     , safe-exceptions
+    , sqlite-simple
     , text
     , time
     , transformers
@@ -82,6 +88,7 @@ executable coinBot-exe
       QuickCheck
     , aeson
     , aeson-qq
+    , amqp
     , attoparsec
     , base >=4.7 && <5
     , base16-bytestring
@@ -100,7 +107,9 @@ executable coinBot-exe
     , lens-aeson
     , mtl
     , network
+    , redis
     , safe-exceptions
+    , sqlite-simple
     , text
     , time
     , transformers
@@ -126,6 +135,7 @@ test-suite coinBot-test
       QuickCheck
     , aeson
     , aeson-qq
+    , amqp
     , attoparsec
     , base >=4.7 && <5
     , base16-bytestring
@@ -144,7 +154,9 @@ test-suite coinBot-test
     , lens-aeson
     , mtl
     , network
+    , redis
     , safe-exceptions
+    , sqlite-simple
     , text
     , time
     , transformers
