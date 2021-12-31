@@ -21,6 +21,7 @@ import Gmo.RestApi
 import Gmo.WsApi
 
 
+
 extractTag :: Text -> IO B.ByteString -> IO (Maybe Value)
 extractTag tag obj = do
     val <- obj
@@ -60,3 +61,11 @@ extractRatesFromWs c io = runGetRateWS $ getRateStream c $ flip getRates io
     getRates b io = do
       let rate = decode b :: Maybe Rate
       io rate
+
+extractOrderBooksFromWs :: Coin -> (Maybe OrderBooks -> IO ()) -> IO ()
+extractOrderBooksFromWs c io = runGetRateWS $ getOrderBookStream c $ flip getRates io
+  where
+    getRates :: BL.ByteString -> (Maybe OrderBooks -> IO ()) -> IO ()
+    getRates b io = do
+      let ob = decode b :: Maybe OrderBooks
+      io ob

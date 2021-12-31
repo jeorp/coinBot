@@ -8,7 +8,7 @@ module Record  where
 import Data.Extensible
 import Control.Lens hiding ((:>))
 import Data.Text
-
+import Data.Aeson
 
 type Rate = Record
   [ "ask" :> Text,
@@ -34,6 +34,18 @@ rateToText r = intercalate "\n"
                   "timestamp : " <> r ^. #timestamp,
                   "volume : " <> r ^. #volume
                 ]
+            
+
+type Order = Record
+  [ "price" :> Text,
+    "size" :> Text
+  ]
+
+type OrderBooks = Record
+  [
+    "asks" :> [Order],
+    "bids" :> [Order]
+  ]
 
 type Trades = Record
   [ "price" :> Text,
@@ -70,7 +82,7 @@ type Assets = Record
     "symbol":> Text
   ]
 
-type Order = Record
+type OrderInfo = Record
   [
     "orderId":> Text,
     "rootOrderId":> Text,
