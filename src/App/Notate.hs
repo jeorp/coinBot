@@ -1,6 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}  
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE QuasiQuotes       #-}
+{-# LANGUAGE TemplateHaskell, DataKinds, TypeOperators, FlexibleContexts #-}
+{-# LANGUAGE OverloadedLabels  #-}
+{-# LANGUAGE OverloadedStrings  #-}
+{-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
 module App.Notate where
 
 import Common
@@ -16,6 +17,9 @@ import qualified Data.Text as T
 import Data.Text.Encoding
 import           Data.Time.Clock.POSIX      (getPOSIXTime)
 import           Network.HTTP.Simple
+import Control.Lens
+import Record
+import Gmo.ToRecord
 
 postJson :: S.String -> Value -> IO BS.ByteString 
 postJson url json = do
@@ -35,3 +39,10 @@ discordHook url msg =
     let t = decode ("{\"content\": \"" <> S8.pack (BS.unpack (encodeUtf8 msg)) <> "\"}") :: Maybe Value
         json = fromMaybe Null t
         in postJson url json
+
+notateExample :: String -> Coin -> IO ()
+notateExample url c = extractRatesFromWs c exampleDo
+  where
+    exampleDo :: Maybe Rate -> IO ()
+    exampleDo (Just r) = discordHook url ("ask: " <> r ^. #ask <> ", bid: " <> r ^. #bid) >>= print
+    exampleDo _ = return ()

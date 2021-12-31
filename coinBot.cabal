@@ -33,6 +33,7 @@ library
       Gmo.GetInfo
       Gmo.RestApi
       Gmo.ToRecord
+      Gmo.WsApi
       Record
   other-modules:
       Paths_coinBot
