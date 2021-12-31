@@ -8,7 +8,7 @@ module Record  where
 import Data.Extensible
 import Control.Lens hiding ((:>))
 import Data.Text
-import Data.Proxy
+
 
 type Rate = Record
   [ "ask" :> Text,
