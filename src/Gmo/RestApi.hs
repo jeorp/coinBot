@@ -33,7 +33,6 @@ getApi url query = do
         $ setRequestQueryString query
         $ request'
   response <- httpBS request
-  print response
   pure $ getResponseBody response
 
 getRates :: Maybe Coin -> IO B.ByteString
