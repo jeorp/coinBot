@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      App.Reply
       Command
       Common
       GetToken
@@ -32,7 +33,6 @@ library
       Gmo.RestApi
       Gmo.ToRecord
       Record
-      Run
   other-modules:
       Paths_coinBot
   hs-source-dirs:
