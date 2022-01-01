@@ -19,7 +19,7 @@ main =  extractRatesFromWs BTC regist_ -- extractKlines BTC "1hour" "20211120" >
     regist_ :: Maybe Rate -> IO ()
     regist_ (Just rate) = do
       conn <- checkedConnect defaultConnectInfo 
-      runRedis conn (uploadRate 0 BTC rate)
+      runRedis conn (uploadRate 0 rate)
     regist_ _ = print "error"
 
 

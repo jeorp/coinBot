@@ -15,10 +15,10 @@ import StoreSql
 import Record
 import Common
 
-uploadRate :: Integer -> Coin -> Rate -> Redis ()
-uploadRate index coin rate = do
+uploadRate :: Integer -> Rate -> Redis ()
+uploadRate index rate = do
   select index
-  s <- hmset (B.pack $ show coin) $ second encodeUtf8 <$>
+  s <- hmset (rate ^. #symbol . to encodeUtf8<> "_rate") $ second encodeUtf8 <$>
     [
       ("ask", rate ^. #ask),
       ("bid", rate ^. #bid),
