@@ -18,7 +18,7 @@ instance ToRow Kline' where
   toRow (Kline' time open high low close volume) = toRow (time, open, high, low, close, volume)
 
 klineMigrateQuery :: Query -> Query 
-klineMigrateQuery table = "create table " <> table <> " (_openTime text primary key, _open real not null, _high real not null, _low real not null, _close real not null, _volue real not null)"
+klineMigrateQuery table = "create table " <> table <> " ( opentime text primary key, open real not null, high real not null, low real not null, close real not null, volue real not null)"
 
 
 openDatabase :: (MonadIO m, MonadCatch m) => m Connection -> (Connection -> m a ) -> m a
@@ -35,13 +35,13 @@ migrateModel query path errorHandle = do
 
 
 --select example
-selectData :: (FromRow q, MonadIO m, MonadCatch m) => Query -> String -> (SQLError -> m [q]) -> m [q]
+selectData :: (FromRow q, MonadIO m, MonadCatch m) => Query -> String -> [Handler m [q]] -> m [q]
 selectData query path errorHnadle = do
     -- does File exists then action else return ()
     bool <- liftIO $ doesFileExist path
     if bool 
       then openDatabase (liftIO $ open path) $ 
-        \c -> liftIO (query_ c query )`catch` errorHnadle
+        \c -> liftIO (query_ c query )`catches` errorHnadle
       else return [] 
 
 -- input 
@@ -53,11 +53,11 @@ migrateKline = migrateModel . klineMigrateQuery
 
 
 -- insert example 
-insertKline :: (MonadIO m, MonadCatch m) => String -> Query -> Kline' -> (SQLError -> m ()) -> m ()
+insertKline :: (MonadIO m, MonadCatch m) => String -> Query -> Kline' -> [Handler m ()] -> m ()
 insertKline path table kline errorHandl = do
     openDatabase (liftIO $ open path) $ \conn -> 
-      liftIO (execute conn ("insert into" <> table <> "values (?, ?, ?, ?, ?, ?)") kline)
-      `catch` 
+      liftIO (execute conn ("insert into " <> table <> " values (?, ?, ?, ?, ?, ?)") kline)
+      `catches` 
       errorHandl
 
 testKline :: Kline'

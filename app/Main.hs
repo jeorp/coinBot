@@ -14,7 +14,7 @@ import Database.Redis
 
 
 main:: IO ()
-main =  extractRatesFromWs BTC regist_ -- extractKlines BTC "1hour" "20211120" >>= (print . fromKline . V.head)
+main =  extractRatesFromWs BTC regist_ 
   where 
     regist_ :: Maybe Rate -> IO ()
     regist_ (Just rate) = do
