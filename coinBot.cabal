@@ -27,6 +27,7 @@ library
   exposed-modules:
       App.Notate
       App.Reply
+      App.Seed
       Command
       Common
       GetToken
@@ -59,6 +60,7 @@ library
     , directory
     , discord-haskell
     , extensible
+    , hedis
     , hspec
     , http-client
     , http-conduit
@@ -66,7 +68,6 @@ library
     , lens-aeson
     , mtl
     , network
-    , redis
     , safe-exceptions
     , sqlite-simple
     , text
@@ -101,6 +102,7 @@ executable coinBot-exe
     , directory
     , discord-haskell
     , extensible
+    , hedis
     , hspec
     , http-client
     , http-conduit
@@ -108,7 +110,6 @@ executable coinBot-exe
     , lens-aeson
     , mtl
     , network
-    , redis
     , safe-exceptions
     , sqlite-simple
     , text
@@ -148,6 +149,7 @@ test-suite coinBot-test
     , directory
     , discord-haskell
     , extensible
+    , hedis
     , hspec
     , http-client
     , http-conduit
@@ -155,7 +157,6 @@ test-suite coinBot-test
     , lens-aeson
     , mtl
     , network
-    , redis
     , safe-exceptions
     , sqlite-simple
     , text

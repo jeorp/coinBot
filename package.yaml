@@ -48,7 +48,7 @@ dependencies:
 - wuss
 - network
 - sqlite-simple
-- redis
+- hedis
 - amqp
 - hspec
 - QuickCheck
