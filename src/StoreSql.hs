@@ -5,10 +5,10 @@ module StoreSql where
 import System.Directory 
 import Control.Exception.Safe
 import Control.Monad.IO.Class
-import Control.Applicative 
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow 
 
+import qualified Data.Vector as V 
 import Model
 
 instance FromRow Kline' where
@@ -18,7 +18,10 @@ instance ToRow Kline' where
   toRow (Kline' time open high low close volume) = toRow (time, open, high, low, close, volume)
 
 klineMigrateQuery :: Query -> Query 
-klineMigrateQuery table = "create table " <> table <> " ( opentime text primary key, open real not null, high real not null, low real not null, close real not null, volue real not null)"
+klineMigrateQuery table = 
+  "create table " <> 
+  table <> 
+  " ( opentime text not null, open real not null, high real not null, low real not null, close real not null, volue real not null)"
 
 
 openDatabase :: (MonadIO m, MonadCatch m) => m Connection -> (Connection -> m a ) -> m a
@@ -59,6 +62,14 @@ insertKline path table kline errorHandl = do
       liftIO (execute conn ("insert into " <> table <> " values (?, ?, ?, ?, ?, ?)") kline)
       `catches` 
       errorHandl
+
+insertKlines :: (MonadIO m, MonadCatch m) => String -> Query -> V.Vector Kline' -> [Handler m ()] -> m ()
+insertKlines path table klines errorHandl = do
+    openDatabase (liftIO $ open path) $ \conn -> mapM_ (store conn) klines
+    where 
+      store conn kline = liftIO (execute conn ("insert into " <> table <> " values (?, ?, ?, ?, ?, ?)") kline)
+       `catches` 
+       errorHandl
 
 testKline :: Kline'
 testKline = Kline' "2021/11/24" 1.11111 2.2989999 3.3333 4.0 5.0
