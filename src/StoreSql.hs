@@ -21,7 +21,7 @@ klineMigrateQuery :: Query -> Query
 klineMigrateQuery table = "create table " <> table <> " (_openTime text primary key, _open real not null, _high real not null, _low real not null, _close real not null, _volue real not null)"
 
 
-openDatabase :: MonadIO m => m Connection -> (Connection -> m a ) -> m a
+openDatabase :: (MonadIO m, MonadCatch m) => m Connection -> (Connection -> m a ) -> m a
 openDatabase ioConnect connectIO = ioConnect >>= (\conn -> connectIO conn <* liftIO (close conn))
 
 
@@ -33,22 +33,32 @@ migrateModel query path errorHandle = do
         else openDatabase (liftIO $ open path) $ \conn ->
             liftIO (execute_ conn query) `catch` errorHandle
 
-selectData :: (FromRow q, MonadIO m) => Query -> String -> m [q]
-selectData query path = do
+
+--select example
+selectData :: (FromRow q, MonadIO m, MonadCatch m) => Query -> String -> (SQLError -> m [q]) -> m [q]
+selectData query path errorHnadle = do
     -- does File exists then action else return ()
     bool <- liftIO $ doesFileExist path
-    if bool then openDatabase (liftIO $ open path) $ liftIO . flip query_ query
-        else return [] 
+    if bool 
+      then openDatabase (liftIO $ open path) $ 
+        \c -> liftIO (query_ c query )`catch` errorHnadle
+      else return [] 
 
-
-testKline :: Kline'
-testKline = Kline' "2021/11/24" 1.11111 2.2989999 3.3333 4.0 5.0
-
-
+-- input 
+-- @ name of table 
+-- @ db path 
+-- @ if error
 migrateKline :: (MonadIO m, MonadCatch m) => Query -> String -> (SQLError -> m ()) -> m ()
 migrateKline = migrateModel . klineMigrateQuery
 
 
-insertKline :: MonadIO m => String -> Query -> Kline' -> m ()
-insertKline path table kline = do
-    openDatabase (liftIO $ open path) $ \conn -> liftIO $ execute conn ("insert into" <> table <> "values (?, ?, ?, ?, ?, ?)") kline
+-- insert example 
+insertKline :: (MonadIO m, MonadCatch m) => String -> Query -> Kline' -> (SQLError -> m ()) -> m ()
+insertKline path table kline errorHandl = do
+    openDatabase (liftIO $ open path) $ \conn -> 
+      liftIO (execute conn ("insert into" <> table <> "values (?, ?, ?, ?, ?, ?)") kline)
+      `catch` 
+      errorHandl
+
+testKline :: Kline'
+testKline = Kline' "2021/11/24" 1.11111 2.2989999 3.3333 4.0 5.0
