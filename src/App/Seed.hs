@@ -14,12 +14,14 @@ import Common
 db :: String
 db = "klines.db"
 
-seeds :: (MonadIO m, MonadCatch m) => Coin -> String -> String -> m ()
-seeds coin interval date = do
+seeds :: (MonadIO m, MonadCatch m) => Coin -> String -> String -> String -> m ()
+seeds coin option interval date = do
   let q = Query $ T.pack $ show coin
-  migrateKline q db (liftIO . print)
+      option_q = Query $ T.pack option
+      table = q <> option_q
+  migrateKline table db (liftIO . print)
   klines <- liftIO $ extractKlines coin interval date
-  insertKlines db q (fromKline <$> klines) [Handler errorHandle]
+  insertKlines db table (fromKline <$> klines) []--[Handler errorHandle]
 
 errorHandle :: MonadIO m => SQLError -> m ()
 errorHandle = liftIO . print
