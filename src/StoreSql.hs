@@ -17,3 +17,5 @@ instance ToRow Kline' where
 
 klineMigrateQuery :: Query -> Query 
 klineMigrateQuery table = "create table " <> table <> " (_openTime text primary key, _open real not null, _high real not null, _low real not null, _close real not null, _volue real not null)"
+
+

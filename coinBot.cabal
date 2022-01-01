@@ -37,7 +37,8 @@ library
       Gmo.WsApi
       Model
       Notate
-      Rabbit
+      Rabbit.Consumer
+      Rabbit.Producer
       Record
       Redis
       StoreSql
