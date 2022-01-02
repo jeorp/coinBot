@@ -16,8 +16,28 @@ import DrawChart
 import Database.Redis
 import Database.SQLite.Simple
 
-main :: IO ()
-main = broadcast
+
+import Graphics.Rendering.Chart.Easy
+import Graphics.Rendering.Chart.Backend.Cairo
+import Data.Time.LocalTime
+
+
+import Graphics.Rendering.Chart.Easy
+import Graphics.Rendering.Chart.Backend.Cairo
+
+signal :: [Double] -> [(Double,Double)]
+signal xs = [ (x,(sin (x*3.14159/45) + 1) / 2 * (sin (x*3.141592/5))) | x <- xs ]
+
+main = toFile def "example1_big.png" $ do
+    layout_title .= "Amplitude Modulation"
+    setColors [opaque blue, opaque red]
+    plot (line "am" [signal [0,(0.5)..400]])
+    plot (points "am points" (signal [0,7..400]))
+
+{-main :: IO ()
+main = do
+  xs <- selectData "select * from ETH_year_4hour;" "klines.db" []
+  drawKlines "eth1.png" xs -}
 
 
 {-main:: IO ()
