@@ -2,4 +2,7 @@
 *~
 *.env
 *.db
+*.png
+*.jpeg
+*.jpg
 temp/

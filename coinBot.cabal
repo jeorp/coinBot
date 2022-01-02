@@ -49,6 +49,9 @@ library
       src
   build-depends:
       Chart
+    , Chart-cairo
+    , Chart-diagrams
+    , Chart-gtk
     , QuickCheck
     , aeson
     , aeson-qq
@@ -58,6 +61,8 @@ library
     , base16-bytestring
     , binary
     , bytestring
+    , cassava
+    , colour
     , cryptohash-sha256
     , data-default-class
     , directory
@@ -91,6 +96,9 @@ executable coinBot-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Chart
+    , Chart-cairo
+    , Chart-diagrams
+    , Chart-gtk
     , QuickCheck
     , aeson
     , aeson-qq
@@ -100,7 +108,9 @@ executable coinBot-exe
     , base16-bytestring
     , binary
     , bytestring
+    , cassava
     , coinBot
+    , colour
     , cryptohash-sha256
     , data-default-class
     , directory
@@ -139,6 +149,9 @@ test-suite coinBot-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Chart
+    , Chart-cairo
+    , Chart-diagrams
+    , Chart-gtk
     , QuickCheck
     , aeson
     , aeson-qq
@@ -148,7 +161,9 @@ test-suite coinBot-test
     , base16-bytestring
     , binary
     , bytestring
+    , cassava
     , coinBot
+    , colour
     , cryptohash-sha256
     , data-default-class
     , directory

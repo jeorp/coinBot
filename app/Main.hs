@@ -10,11 +10,14 @@ import Common
 import qualified Data.Vector as V
 import Redis
 import Model
+import StoreSql
 import Record
+import DrawChart
 import Database.Redis
+import Database.SQLite.Simple
 
 main :: IO ()
-main = mapM_ storeYear_4hour [minBound .. maxBound]
+main = broadcast
 
 
 {-main:: IO ()

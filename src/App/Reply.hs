@@ -21,6 +21,7 @@ import Data.Maybe
 import Data.Monoid
 import qualified Data.Vector as V
 import qualified Data.Text as T
+import qualified Data.ByteString as B 
 import qualified Data.Text.IO as TIO
 import UnliftIO.Concurrent
 
@@ -55,8 +56,6 @@ doBroad m = do
 
   when (isJust isCoinSelect) $ replyCoinRate $ fromMaybe def isCoinSelect 
   when (isJust isAllSelect) replyAllRates
-  {-   void $ restCall (R.CreateReaction (messageChannel m, messageId m) "eyes")
-       threadDelay (1 * 10^6) -}
   where
     replyCoinRate :: Coin -> DiscordHandler ()
     replyCoinRate c = do
@@ -69,6 +68,7 @@ doBroad m = do
           void $ restCall (R.CreateReaction (messageChannel m, messageId m) "eyes")
           threadDelay (1 * 10^6)
           void $ restCall (R.CreateMessage (messageChannel m) "Can not get rate .. ")
+          --uploadPic "temp/BTC_trades.png" "send picture"
       return ()
     
     replyAllRates :: DiscordHandler ()
@@ -77,3 +77,14 @@ doBroad m = do
       if V.null rates
         then void $ restCall (R.CreateMessage (messageChannel m) "Can not get rates .. ")
         else V.mapM_ (void . restCall . R.CreateMessage (messageChannel m) . rateToText) rates
+    
+    uploadFile :: FilePath -> T.Text -> DiscordHandler ()
+    uploadFile path text = do
+      s <- liftIO $ B.readFile path
+      void $ restCall (R.CreateMessageUploadFile (messageChannel m) text s)
+
+    sendPic :: FilePath -> T.Text -> DiscordHandler ()
+    sendPic path text = do
+      s <- liftIO $ B.readFile path
+      let img_ = def {createEmbedImage = Just $ CreateEmbedImageUpload s}
+      void $ restCall (R.CreateMessageEmbed (messageChannel m) text img_)

@@ -29,6 +29,7 @@ dependencies:
 - vector
 - unliftio
 - discord-haskell
+- cassava
 - aeson
 - aeson-qq
 - lens-aeson
@@ -51,6 +52,10 @@ dependencies:
 - hedis
 - amqp
 - Chart
+- Chart-cairo
+- Chart-diagrams
+- Chart-gtk
+- colour
 - hspec
 - QuickCheck
 library:
