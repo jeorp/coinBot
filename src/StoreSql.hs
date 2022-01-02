@@ -30,11 +30,8 @@ openDatabase ioConnect connectIO = ioConnect >>= (\conn -> connectIO conn <* lif
 
 migrateModel :: (MonadIO m, MonadCatch m) => Query -> String -> (SQLError -> m ()) -> m ()
 migrateModel query path errorHandle = do
-    -- does File exists then return () else action
-    bool <- liftIO $ doesFileExist path
-    if bool then return () 
-        else openDatabase (liftIO $ open path) $ \conn ->
-            liftIO (execute_ conn query) `catch` errorHandle
+    openDatabase (liftIO $ open path) $ \conn ->
+      liftIO (execute_ conn query) `catch` errorHandle
 
 
 --select example

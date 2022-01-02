@@ -50,6 +50,7 @@ dependencies:
 - sqlite-simple
 - hedis
 - amqp
+- Chart
 - hspec
 - QuickCheck
 library:

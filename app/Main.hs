@@ -14,7 +14,7 @@ import Record
 import Database.Redis
 
 main :: IO ()
-main = mapM_ (seeds ETH "_year_4hour" "4hour") ["2018", "2019", "2020"]
+main = mapM_ storeYear_4hour [minBound .. maxBound]
 
 
 {-main:: IO ()

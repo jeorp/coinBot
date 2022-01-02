@@ -26,3 +26,6 @@ seeds coin option interval date = do
 errorHandle :: MonadIO m => SQLError -> m ()
 errorHandle = liftIO . print
 
+storeYear_4hour :: (MonadIO m, MonadCatch m) => Coin -> m ()
+storeYear_4hour coin = mapM_ (seeds coin "_year_4hour" "4hour") ["2018", "2019", "2020"]
+
