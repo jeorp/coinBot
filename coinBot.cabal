@@ -38,6 +38,7 @@ library
       Gmo.WsApi
       Model
       Notate
+      OutputCsv
       Rabbit.Consumer
       Rabbit.Producer
       Record
