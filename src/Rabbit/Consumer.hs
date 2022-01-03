@@ -3,6 +3,7 @@ module Rabbit.Consumer where
 
 import Redis
 import Notate
+import Command
 import Network.AMQP
 import Control.Monad
 import qualified Data.ByteString.Lazy.Char8 as BL

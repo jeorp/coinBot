@@ -15,8 +15,8 @@ import StoreSql
 import Record
 import Common
 
-uploadRate :: Integer -> Rate -> Redis ()
-uploadRate index rate = do
+uploadRateRedis :: Integer -> Rate -> Redis ()
+uploadRateRedis index rate = do
   select index
   s <- hmset (rate ^. #symbol . to encodeUtf8<> "_rate") $ second encodeUtf8 <$>
     [
@@ -30,3 +30,6 @@ uploadRate index rate = do
       ("volume", rate ^. #volume)    
     ]
   liftIO $ print s
+
+getRateRedis :: Integer -> IO [Rate]
+getRateRedis i = undefined 
