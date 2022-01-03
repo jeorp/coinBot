@@ -24,16 +24,16 @@ type Rate = Record
 
 rateToText :: Rate -> Text
 rateToText r = intercalate "\n" 
-                [
-                  "symbol : " <> r ^. #symbol,
-                  "ask : " <> r ^. #ask,
-                  "bid : " <> r ^. #bid,
-                  "high : " <> r ^. #high,
-                  "last : " <> r ^. #last,
-                  "low : " <> r ^. #low,
-                  "timestamp : " <> r ^. #timestamp,
-                  "volume : " <> r ^. #volume
-                ]
+  [
+    "symbol : " <> r ^. #symbol,
+    "ask : " <> r ^. #ask,
+    "bid : " <> r ^. #bid,
+    "high : " <> r ^. #high,
+    "last : " <> r ^. #last,
+    "low : " <> r ^. #low,
+    "timestamp : " <> r ^. #timestamp,
+    "volume : " <> r ^. #volume
+  ]
             
 
 type Order = Record

@@ -68,7 +68,7 @@ doBroad m = do
           void $ restCall (R.CreateReaction (messageChannel m, messageId m) "eyes")
           threadDelay (1 * 10^6)
           void $ restCall (R.CreateMessage (messageChannel m) "Can not get rate .. ")
-          --uploadPic "temp/BTC_trades.png" "send picture"
+          
       return ()
     
     replyAllRates :: DiscordHandler ()

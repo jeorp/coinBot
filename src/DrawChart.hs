@@ -18,7 +18,7 @@ temp = "temp/"
 drawKlines :: FilePath -> [Kline'] -> IO ()
 drawKlines path xs = do
   toFile def (temp <> path) $ do
-    layout_title .= "Amplitude Modulation"
+    layout_title .= "Chart"
     setColors [opaque red]
     plot (line "price" [ [ (klineToLocalTime k, _close k :: Float) |  k <- xs] ])
   where
