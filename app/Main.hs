@@ -25,7 +25,7 @@ import Control.Concurrent
 
 main = do
   forkIO consumer'
-  threadDelay (1 * 10^6) >> produceCommand "topicExchg" "de.hello" "test"
+  threadDelay (1 * 10^6) >> produceCommand "redisExchg" "get.some" "test"
   
 
 --mapM_ storeYear_4hour [minBound .. maxBound]

@@ -4,6 +4,7 @@ module Rabbit.Consumer where
 import Redis
 import Notate
 import Network.AMQP
+import Control.Monad
 import qualified Data.ByteString.Lazy.Char8 as BL
 
 
@@ -14,34 +15,33 @@ consumer' = do
 
     
     --declare queues, exchanges and bindings
-    declareQueue chan newQueue {queueName = "myQueueDE"}
-    declareQueue chan newQueue {queueName = "myQueueEN"}
-    
-    declareExchange chan newExchange {exchangeName = "topicExchg", exchangeType = "topic"}
-    bindQueue chan "myQueueDE" "topicExchg" "de.*"
-    bindQueue chan "myQueueEN" "topicExchg" "en.*"
-    
-
-    --subscribe to the queues
-    consumeMsgs chan "myQueueDE" Ack myCallbackDE
-    consumeMsgs chan "myQueueEN" Ack myCallbackEN
+    registRedisQueue chan
     
     
     getLine -- wait for keypress
     closeConnection conn
     putStrLn "connection closed"
 
+
+registRedisQueue :: Channel -> IO ()
+registRedisQueue chan = void $ do
+    declareQueue chan newQueue {queueName = "redisSet"}
+    declareQueue chan newQueue {queueName = "redisGet"}
     
+    declareExchange chan newExchange {exchangeName = "redisExchg", exchangeType = "topic"}
+    bindQueue chan "redisSet" "redisExchg" "set.*"
+    bindQueue chan "redisGet" "redisExchg" "get.*"
     
+    consumeMsgs chan "redisSet" Ack myCallbackSet
+    consumeMsgs chan "redisGet" Ack myCallbackGet
+    where
+      myCallbackSet :: (Message,Envelope) -> IO ()
+      myCallbackSet (msg, env) = do
+        putStrLn $ "received from Redis.Set: "++(BL.unpack $ msgBody msg)
+        ackEnv env
 
-myCallbackDE :: (Message,Envelope) -> IO ()
-myCallbackDE (msg, env) = do
-    putStrLn $ "received from DE: "++(BL.unpack $ msgBody msg)
-    ackEnv env
-
-
-myCallbackEN :: (Message,Envelope) -> IO ()
-myCallbackEN (msg, env) = do
-    print $ envRoutingKey env
-    putStrLn $ "received from EN: "++(BL.unpack $ msgBody msg)
-    ackEnv env
+      myCallbackGet :: (Message,Envelope) -> IO ()
+      myCallbackGet (msg, env) = do
+        print $ envRoutingKey env
+        putStrLn $ "received from Redis.Get: "++(BL.unpack $ msgBody msg)
+        ackEnv env
