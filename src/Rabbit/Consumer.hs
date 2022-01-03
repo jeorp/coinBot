@@ -1,8 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Rabbit.Consumer where
 
+import Redis
+import Notate
 import Network.AMQP
-
 import qualified Data.ByteString.Lazy.Char8 as BL
 
 

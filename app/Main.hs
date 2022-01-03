@@ -19,19 +19,18 @@ import Database.Redis
 import Database.SQLite.Simple
 import Control.Concurrent
 
+{-main = do
+  xs <- selectData "select * from ETH_year_4hour;" "klines.db" []
+  drawKlines "eth1.png" xs-}
+
 main = do
   forkIO consumer'
   loop
   where
-    loop = producer' >> loop
+    loop = producer' "topicExchg" "de.hello" "test" >> loop
   
 
 --mapM_ storeYear_4hour [minBound .. maxBound]
-
-{-main :: IO ()
-main = do
-  xs <- selectData "select * from ETH_year_4hour;" "klines.db" []
-  drawKlines "eth1.png" xs-}
 
 
 {-main:: IO ()
