@@ -42,5 +42,6 @@ myCallbackDE (msg, env) = do
 
 myCallbackEN :: (Message,Envelope) -> IO ()
 myCallbackEN (msg, env) = do
+    print $ envRoutingKey env
     putStrLn $ "received from EN: "++(BL.unpack $ msgBody msg)
     ackEnv env

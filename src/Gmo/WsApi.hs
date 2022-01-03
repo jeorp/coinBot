@@ -38,5 +38,5 @@ getOrderBookStream coin =
     let subscribe = "{ \"command\" : \"subscribe\", \"channel\": \"orderbooks\", \"symbol\": \""<> B.pack (show coin) <> "\" }"
     in wsStream subscribe
 
-runGetRateWS :: WS.ClientApp () -> IO ()
-runGetRateWS app = withSocketsDo $ WSS.runSecureClient "api.coin.z.com" 443 "/ws/public/v1" app
+runStreamWS :: WS.ClientApp () -> IO ()
+runStreamWS app = withSocketsDo $ WSS.runSecureClient "api.coin.z.com" 443 "/ws/public/v1" app

@@ -61,7 +61,7 @@ extractKlines c interval date = do
 -------------------------------------------
 
 extractRatesFromWs :: Coin -> (Maybe Rate -> IO ()) -> IO ()
-extractRatesFromWs c io = runGetRateWS $ getRateStream c $ flip getRates io
+extractRatesFromWs c io = runStreamWS $ getRateStream c $ flip getRates io
   where
     getRates :: BL.ByteString -> (Maybe Rate -> IO ()) -> IO ()
     getRates b io = do
@@ -69,7 +69,7 @@ extractRatesFromWs c io = runGetRateWS $ getRateStream c $ flip getRates io
       io rate
 
 extractOrderBooksFromWs :: Coin -> (Maybe OrderBooks -> IO ()) -> IO ()
-extractOrderBooksFromWs c io = runGetRateWS $ getOrderBookStream c $ flip getRates io
+extractOrderBooksFromWs c io = runStreamWS $ getOrderBookStream c $ flip getRates io
   where
     getRates :: BL.ByteString -> (Maybe OrderBooks -> IO ()) -> IO ()
     getRates b io = do
