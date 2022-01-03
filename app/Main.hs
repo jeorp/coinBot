@@ -13,10 +13,20 @@ import Model
 import StoreSql
 import Record
 import DrawChart
+import Rabbit.Consumer
+import Rabbit.Producer
 import Database.Redis
 import Database.SQLite.Simple
+import Control.Concurrent
 
-main = mapM_ storeYear_4hour [minBound .. maxBound]
+main = do
+  forkIO consumer'
+  loop
+  where
+    loop = producer' >> loop
+  
+
+--mapM_ storeYear_4hour [minBound .. maxBound]
 
 {-main :: IO ()
 main = do

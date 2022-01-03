@@ -6,8 +6,8 @@ import Network.AMQP
 import qualified Data.ByteString.Lazy.Char8 as BL
 
 
-consumer :: IO ()
-consumer = do
+consumer' :: IO ()
+consumer' = do
     conn <- openConnection "127.0.0.1" "/" "guest" "guest"
     chan <- openChannel conn
 
