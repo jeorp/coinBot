@@ -10,7 +10,7 @@ import Database.Redis
 import Control.Lens ((^.), to, Lens')
 import Control.Arrow
 import Control.Monad
-import Data.Extensible
+--import Data.Extensible
 import Control.Monad.IO.Class
 import qualified Data.ByteString.Char8 as B
 import qualified Data.Text as T
@@ -46,13 +46,30 @@ data Rate' = Rate'
   }
 
 fromRate :: Rate -> Rate'
-fromRate r = undefined
+fromRate r =
+  Rate' 
+    (r ^. #ask . to T.unpack  . to read)
+    (r ^. #bid . to T.unpack  . to read) 
+    (r ^. #high . to T.unpack  . to read)
+    (r ^. #low . to T.unpack  . to read)
+    (r ^. #symbol)
+    (r ^. #timestamp)
+    (r ^. #volume . to T.unpack . to read)
 
 getRateRedis :: B.ByteString -> Redis Rate'
-getRateRedis key = undefined
-
-
-
+getRateRedis key = do
+  all <- hgetall key
+  let xs = fromRight [] all
+      lookup_ = B.unpack . fromMaybe "" . flip lookup xs
+      rate = Rate' 
+        (lookup_ "ask" ^. to read)
+        (lookup_ "bid" ^. to read)
+        (lookup_ "high" ^. to read)
+        (lookup_ "low" ^. to read)
+        (lookup_ "symbol" ^. to T.pack)
+        (lookup_ "timestamp" ^. to T.pack)
+        (lookup_ "volume" ^. to read)
+  return rate
 
 {-
 getRateRedis :: B.ByteString -> Redis Rate
