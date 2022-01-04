@@ -53,8 +53,9 @@ registRedisQueue chan = void $ do
 
       callbackRedisGet :: (Message,Envelope) -> IO ()
       callbackRedisGet (msg, env) = do
-        print $ envRoutingKey env
-        putStrLn $ "received from Redis.Get: "++(BL.unpack $ msgBody msg)
+        putStrLn "received from Redis.Get"
+        let input = T.unpack . T.drop (T.length "set.") $ envRoutingKey env
+           -- isCoinSelect = getLast $ lookupFromRegisteredA input (def :: Coin)
         ackEnv env
 
 doRedisSet :: Maybe Coin -> BL.ByteString -> IO ()
