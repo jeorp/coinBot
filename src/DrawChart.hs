@@ -23,7 +23,4 @@ drawKlines path xs = do
     plot (line "price" [ [ (klineToLocalTime k, _klineClose k :: Float) |  k <- xs] ])
   where
     klineToLocalTime :: Kline' -> LocalTime
-    klineToLocalTime k = 
-        let i = read (T.unpack (_klineOpenTime k)) :: I.Int64
-            utcTime = systemToUTCTime (MkSystemTime i 0)
-        in utcToLocalTime utc utcTime
+    klineToLocalTime = utcToLocalTime utc . _klineOpenTime

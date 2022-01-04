@@ -34,7 +34,9 @@ migrateModel query path errorHandle = do
       liftIO (execute_ conn query) `catch` errorHandle
 
 flushTableData :: (MonadIO m, MonadCatch m) => Query -> String -> (SQLError -> m ()) -> m ()
-flushTableData table_name path errorHandler = undefined
+flushTableData table_name path errorHandler = do
+    openDatabase (liftIO $ open path) $ \conn ->
+      liftIO (execute_ conn ("delete from " <> table_name <> ";")) `catch` errorHandler
 
 --select example
 selectData :: (FromRow q, MonadIO m, MonadCatch m) => Query -> String -> [Handler m [q]] -> m [q]
@@ -69,6 +71,3 @@ insertKlines path table klines errorHandl = do
       store conn kline = liftIO (execute conn ("insert into " <> table <> " values (?, ?, ?, ?, ?, ?)") kline)
        `catches` 
        errorHandl
-
-testKline :: Kline'
-testKline = Kline' "2021/11/24" 1.11111 2.2989999 3.3333 4.0 5.0

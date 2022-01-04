@@ -6,6 +6,9 @@ import Record
 import Data.Extensible
 import Control.Lens hiding ((:>))
 import qualified Data.Text as T 
+import Data.Time.Clock
+import Data.Time.Clock.System
+import Data.Int
 
 toFloat :: T.Text -> Float 
 toFloat = read . T.unpack
@@ -21,7 +24,7 @@ fromOrder order = Order' (toFloat (order ^. #price)) (toFloat (order ^. #size))
 
 data Kline' = Kline' 
   {
-    _klineOpenTime :: T.Text,
+    _klineOpenTime :: UTCTime ,
     _klineOpen :: Float,
     _klineHigh :: Float,
     _klineLow :: Float,
@@ -31,13 +34,16 @@ data Kline' = Kline'
 
 
 fromKline :: Kline -> Kline'
-fromKline kl = Kline' 
-  (kl ^. #openTime) 
-  (toFloat (kl ^. #open)) 
-  (toFloat (kl ^. #high))
-  (toFloat (kl ^. #low))
-  (toFloat (kl ^. #close)) 
-  (toFloat (kl ^. #volume))
+fromKline kl = 
+  let unix = read (T.unpack (kl ^. #openTime)) :: Int64
+      sysTime = MkSystemTime (unix `div` 1000) 0
+  in Kline' 
+      (systemToUTCTime sysTime) 
+      (toFloat (kl ^. #open)) 
+      (toFloat (kl ^. #high))
+      (toFloat (kl ^. #low))
+      (toFloat (kl ^. #close)) 
+      (toFloat (kl ^. #volume))
   
 data Rate' = Rate' 
   {
