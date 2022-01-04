@@ -13,6 +13,7 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Data.Vector as V
 import Redis
 import Model
+import Time
 import StoreSql
 import Record
 import DrawChart
