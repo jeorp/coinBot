@@ -15,11 +15,11 @@ import qualified Data.ByteString.Lazy.Char8 as B
 
 --makeLenses 
 
-wsStream :: B.ByteString  -> (B.ByteString  -> IO ()) -> WS.ClientApp ()
-wsStream subscribe recv conn = do
-    putStrLn "Connecting..."
+wsStream :: String -> B.ByteString  -> (B.ByteString  -> IO ()) -> WS.ClientApp ()
+wsStream tag subscribe recv conn = do
+    putStrLn $ "wsStream : Connecting " <> tag  
     WS.sendTextData conn subscribe
-    putStrLn "Success connect!"
+    putStrLn $ "Success connect " <> tag
 
     _ <- forkIO $ forever $ do
         msg <- WS.receiveData conn
@@ -31,12 +31,12 @@ wsStream subscribe recv conn = do
 getRateStream :: Coin -> (B.ByteString  -> IO ()) -> WS.ClientApp ()
 getRateStream coin =
     let subscribe = "{ \"command\" : \"subscribe\", \"channel\": \"ticker\", \"symbol\": \"" <> B.pack (show coin) <> "\" }" 
-    in wsStream subscribe
+    in wsStream (show coin <> "_Rate Server") subscribe
 
 getOrderBookStream :: Coin -> (B.ByteString -> IO ()) -> WS.ClientApp ()
 getOrderBookStream coin =
     let subscribe = "{ \"command\" : \"subscribe\", \"channel\": \"orderbooks\", \"symbol\": \""<> B.pack (show coin) <> "\" }"
-    in wsStream subscribe
+    in wsStream (show coin <> "_OrderBooks Server") subscribe
 
 runStreamWS :: WS.ClientApp () -> IO ()
 runStreamWS app = withSocketsDo $ WSS.runSecureClient "api.coin.z.com" 443 "/ws/public/v1" app
