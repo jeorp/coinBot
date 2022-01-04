@@ -16,6 +16,9 @@ producerIO io = do
 produceCommand :: T.Text -> T.Text -> String -> IO ()
 produceCommand exName ex ms = producerIO $ \chan -> sendMs chan exName ex ms
 
+produceData :: T.Text -> T.Text -> BL.ByteString -> IO ()
+produceData exName ex d = producerIO $ \chan -> sendData chan exName ex d
+
 sendMs :: Channel -> T.Text -> T.Text -> String -> IO ()
 sendMs chan exName ex ms = do
     putStrLn $ "send : " <> ms 

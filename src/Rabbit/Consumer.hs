@@ -48,6 +48,7 @@ registRedisQueue chan = void $ do
         putStrLn "received from Redis.Set"
         let input = T.unpack . T.drop (T.length "set.") $ envRoutingKey env
             isCoinSelect = getLast $ lookupFromRegisteredA input (def :: Coin)
+        putStrLn $ "sotre " <> input <> " rate ..."
         when (isJust isCoinSelect) $ doRedisSet isCoinSelect (msgBody msg)
         ackEnv env
 
@@ -59,7 +60,7 @@ registRedisQueue chan = void $ do
         ackEnv env
 
 doRedisSet :: Maybe Coin -> BL.ByteString -> IO ()
-doRedisSet (Just c) bl = do
+doRedisSet (Just _) bl = do
   let rate = A.decode bl :: Maybe Rate
   storeRateInRedis rate
   where 

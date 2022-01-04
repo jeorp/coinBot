@@ -28,6 +28,7 @@ library
       App.Notate
       App.Reply
       App.Seed
+      App.WsApp
       Command
       Common
       DrawChart
@@ -57,6 +58,7 @@ library
     , aeson
     , aeson-qq
     , amqp
+    , async
     , attoparsec
     , base >=4.7 && <5
     , base16-bytestring
@@ -105,6 +107,7 @@ executable coinBot-exe
     , aeson
     , aeson-qq
     , amqp
+    , async
     , attoparsec
     , base >=4.7 && <5
     , base16-bytestring
@@ -159,6 +162,7 @@ test-suite coinBot-test
     , aeson
     , aeson-qq
     , amqp
+    , async
     , attoparsec
     , base >=4.7 && <5
     , base16-bytestring

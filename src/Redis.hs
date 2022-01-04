@@ -75,21 +75,3 @@ getRateRedis key = do
         (lookup_ "volume" ^. to read)
   return rate
 
-{-
-getRateRedis :: B.ByteString -> Redis Rate
-getRateRedis key = do
-  all <- hgetall key
-  let xs = fromRight [] all
-      lookup_ = decodeUtf8 . fromMaybe "" . flip lookup xs
-      rate = #ask @= lookup_ "ask"
-          <: #bid @= lookup_ "bid" 
-          <: #high @= lookup_ "high"
-          <: #last @= lookup_ "last"
-          <: #low @= lookup_ "low"
-          <: #symbol @= lookup_ "symbol"
-          <: #timestamp @= lookup_ "timestamp"
-          <: #volume @= lookup_ "volume" 
-          <: emptyRecord
-
-  return rate
--}
