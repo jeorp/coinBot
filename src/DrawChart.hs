@@ -20,10 +20,10 @@ drawKlines path xs = do
   toFile def (temp <> path) $ do
     layout_title .= "Chart"
     setColors [opaque red]
-    plot (line "price" [ [ (klineToLocalTime k, _close k :: Float) |  k <- xs] ])
+    plot (line "price" [ [ (klineToLocalTime k, _klineClose k :: Float) |  k <- xs] ])
   where
     klineToLocalTime :: Kline' -> LocalTime
     klineToLocalTime k = 
-        let i = read (T.unpack (_openTime k)) :: I.Int64
+        let i = read (T.unpack (_klineOpenTime k)) :: I.Int64
             utcTime = systemToUTCTime (MkSystemTime i 0)
         in utcToLocalTime utc utcTime

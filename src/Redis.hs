@@ -6,6 +6,7 @@ module Redis where
 
 import Data.Either
 import Data.Maybe
+import Data.Traversable
 import Database.Redis
 import Control.Lens ((^.), to, Lens')
 import Control.Arrow
@@ -19,6 +20,7 @@ import Data.Text.Encoding
 import StoreSql
 import Record
 import Common
+import Model
 
 executeRedis :: Redis () -> IO ()
 executeRedis redis = bracket (checkedConnect defaultConnectInfo) (`runRedis` redis) disconnect
@@ -38,27 +40,6 @@ uploadRateRedis rate = do
     ]
   liftIO $ print s
 
-data Rate' = Rate' 
-  {
-    _ask :: Float,
-    _bid :: Float, 
-    _high :: Float,
-    _low :: Float,
-    _symbol :: T.Text,
-    _timestamp :: T.Text,
-    _volume :: Float
-  }
-
-fromRate :: Rate -> Rate'
-fromRate r =
-  Rate' 
-    (r ^. #ask . to T.unpack  . to read)
-    (r ^. #bid . to T.unpack  . to read) 
-    (r ^. #high . to T.unpack  . to read)
-    (r ^. #low . to T.unpack  . to read)
-    (r ^. #symbol)
-    (r ^. #timestamp)
-    (r ^. #volume . to T.unpack . to read)
 
 getRateRedis :: B.ByteString -> Redis Rate'
 getRateRedis key = do
@@ -74,4 +55,18 @@ getRateRedis key = do
         (lookup_ "timestamp" ^. to T.pack)
         (lookup_ "volume" ^. to read)
   return rate
+
+getRatesRedis :: Redis [Rate']
+getRatesRedis = do
+  let xs = getRateRedis . B.pack . (<> "_rate") . show <$> ([minBound .. maxBound] :: [Coin])
+  sequenceA xs
+
+updateRank :: Integer -> B.ByteString -> (Rate' -> Double) -> Redis ()
+updateRank i tag f = do
+  rates <- getRatesRedis
+  select i 
+  zrem tag $ B.pack . show <$> ([minBound .. maxBound] :: [Coin])
+  zadd tag $ (f &&& encodeUtf8 . _rateSymbol) <$> rates
+  return ()
+
 

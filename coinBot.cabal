@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Analysis.Technical
       App.Notate
       App.Reply
       App.Seed
