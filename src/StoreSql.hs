@@ -33,6 +33,8 @@ migrateModel query path errorHandle = do
     openDatabase (liftIO $ open path) $ \conn ->
       liftIO (execute_ conn query) `catch` errorHandle
 
+flushTableData :: (MonadIO m, MonadCatch m) => Query -> String -> (SQLError -> m ()) -> m ()
+flushTableData table_name path errorHandler = undefined
 
 --select example
 selectData :: (FromRow q, MonadIO m, MonadCatch m) => Query -> String -> [Handler m [q]] -> m [q]
