@@ -46,6 +46,7 @@ library
       Record
       Redis
       StoreSql
+      Time
   other-modules:
       Paths_coinBot
   hs-source-dirs:

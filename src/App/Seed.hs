@@ -11,6 +11,7 @@ import Gmo.ToRecord
 import StoreSql
 import Model
 import Common
+import Time
 
 db :: String
 db = "klines.db"
@@ -36,8 +37,8 @@ storeDayKline coin optin_q interval day = undefined
 getLattestDay :: (MonadIO m, MonadCatch m) => String -> m Day
 getLattestDay table_name = undefined
 
-getToday :: IO Day
-getToday = undefined
 
-printDay :: IO ()
-printDay = print $ addDays 1 (read "2021-11-20")
+
+printDayTest1 :: IO ()
+printDayTest1 = print $ addDays 1 (read "2021-11-20")
+
