@@ -19,6 +19,7 @@ import Control.Lens
 import Data.Default.Class
 import Data.Monoid
 import Data.List
+import Data.Char
 import Data.Proxy
 import GHC.TypeLits
 
@@ -92,7 +93,7 @@ lookupFromRegisteredSS = lookup_
   where
     lookup_ :: [Command' s s] -> String -> s -> Last s
     lookup_ [] _ _ = Last Nothing
-    lookup_ ((Relate l p) : xs) s ans = if symbolVal p == s then Last (Just $ ans ^. l) else lookup_ xs s ans
+    lookup_ ((Relate l p) : xs) s ans = if symbolVal p == fmap toLower s then Last (Just $ ans ^. l) else lookup_ xs s ans
 
 isRegistered_ :: [Command' s a] -> String -> Bool
 isRegistered_ [] _ = False
