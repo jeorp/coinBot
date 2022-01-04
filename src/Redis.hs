@@ -10,6 +10,7 @@ import Database.Redis
 import Control.Lens ((^.), to, Lens')
 import Control.Arrow
 import Control.Monad
+import Control.Exception
 --import Data.Extensible
 import Control.Monad.IO.Class
 import qualified Data.ByteString.Char8 as B
@@ -18,6 +19,9 @@ import Data.Text.Encoding
 import StoreSql
 import Record
 import Common
+
+executeRedis :: Redis () -> IO ()
+executeRedis redis = bracket (checkedConnect defaultConnectInfo) (`runRedis` redis) disconnect
 
 uploadRateRedis :: Rate -> Redis ()
 uploadRateRedis rate = do
@@ -76,7 +80,7 @@ getRateRedis :: B.ByteString -> Redis Rate
 getRateRedis key = do
   all <- hgetall key
   let xs = fromRight [] all
-      lookup_ = T.pack . B.unpack . fromMaybe "" . flip lookup xs
+      lookup_ = decodeUtf8 . fromMaybe "" . flip lookup xs
       rate = #ask @= lookup_ "ask"
           <: #bid @= lookup_ "bid" 
           <: #high @= lookup_ "high"
