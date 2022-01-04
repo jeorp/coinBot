@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedLabels  #-}
 module OutputCsv where
 
+import Model
 import Record
 import Control.Lens
 import Control.Arrow
@@ -10,23 +11,51 @@ import qualified Data.ByteString.Lazy as BL
 import qualified Data.Vector as V
 import Data.Csv
 
-data Order' = Order'
+data Order'' = Order''
   {
     _tag :: T.Text,
-    _price :: Float,
-    _size :: Float
+    _Orderprice :: Float,
+    _Ordersize :: Float
   }
 
-instance ToRecord Order' where
-    toRecord (Order' tag price size) = record [
-        toField tag, toField price, toField size]
-
-fromOrderBooks :: OrderBooks -> [Order']
+fromOrderBooks :: OrderBooks -> [Order'']
 fromOrderBooks obs =
-    let convert = \tag -> uncurry (Order' tag) . over both (read . T.unpack) . ((^. #price) &&& (^. #size)) :: Order -> Order'    
+    let convert = \tag -> uncurry (Order'' tag) . over both (read . T.unpack) . ((^. #price) &&& (^. #size)) :: Order -> Order''    
     in (convert "asks" <$> obs ^. #asks) ++ (convert "bids" <$> obs ^. #bids)
+
+instance ToRecord Order'' where
+    toRecord (Order'' tag price size) = record 
+      [
+        toField tag, 
+        toField price, 
+        toField size
+      ]
+
+instance ToRecord Margin' where
+    toRecord (Margin' p a m c r l) = record 
+      [
+        toField p, 
+        toField a, 
+        toField m,
+        toField c,
+        toField r,
+        toField l     
+      ]
+
+instance ToRecord Assets' where
+    toRecord (Assets' m a r s) = record 
+      [
+        toField m, 
+        toField a, 
+        toField r,
+        toField s     
+      ]
 
 orderBooksEncode :: OrderBooks -> BL.ByteString
 orderBooksEncode = encode . fromOrderBooks
 
+marginEncode :: Margin -> BL.ByteString
+marginEncode = encode . (:[]) . fromMargin
 
+assetsEncode :: [Assets] -> BL.ByteString
+assetsEncode = encode . fmap fromAssets 

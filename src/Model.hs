@@ -59,10 +59,47 @@ data Rate' = Rate'
 fromRate :: Rate -> Rate'
 fromRate r =
   Rate' 
-    (r ^. #ask . to T.unpack  . to read)
-    (r ^. #bid . to T.unpack  . to read) 
-    (r ^. #high . to T.unpack  . to read)
-    (r ^. #low . to T.unpack  . to read)
+    (r ^. #ask . to toFloat)
+    (r ^. #bid . to toFloat) 
+    (r ^. #high . to toFloat)
+    (r ^. #low . to toFloat)
     (r ^. #symbol)
     (r ^. #timestamp)
-    (r ^. #volume . to T.unpack . to read)
+    (r ^. #volume . to toFloat)
+
+data Margin' = Margin' 
+  {
+    _MactualProfitLoss :: Float,
+    _MavailableAmount :: Float,
+    _Mmargin :: Float,
+    _MmarginCallStatus :: T.Text,
+    _MmarginRatio :: Float,
+    _MprofitLoss :: Float
+  }
+
+fromMargin :: Margin -> Margin'
+fromMargin m = 
+  Margin' 
+    (m ^. #actualProfitLoss . to toFloat)
+    (m ^. #availableAmount . to toFloat)
+    (m ^. #margin . to toFloat)
+    (m ^. #marginCallStatus)
+    (m ^. #marginRatio . to toFloat)
+    (m ^. #profitLoss . to toFloat)
+
+data Assets' = Assets'
+  {
+    _Aamount :: Float,
+    _Aavailable :: Float,
+    _AconversionRate :: Float,
+    _Asymbol :: T.Text
+  }
+
+fromAssets :: Assets -> Assets'
+fromAssets a = 
+  Assets' 
+    (a ^. #amount . to toFloat)
+    (a ^. #available . to toFloat)
+    (a ^. #conversionRate . to toFloat)
+    (a ^. #symbol)
+
