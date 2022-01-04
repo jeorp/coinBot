@@ -22,7 +22,7 @@ import Rabbit.Producer
 import Database.Redis
 import Database.SQLite.Simple
 import Control.Concurrent
-
+import Data.Time.Clock
 
 main :: IO ()
 main = do

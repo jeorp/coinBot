@@ -9,6 +9,8 @@ import Data.Extensible
 import Control.Lens hiding ((:>))
 import Data.Text
 import Data.Aeson
+import Time
+import Data.Time.Clock
 
 type Rate = Record
   [ "ask" :> Text,
@@ -31,7 +33,7 @@ rateToText r = intercalate "\n"
     "high : " <> r ^. #high,
     "last : " <> r ^. #last,
     "low : " <> r ^. #low,
-    "timestamp : " <> r ^. #timestamp,
+    "timestamp : " <>  (r ^. #timestamp . to (pack . show . utcToTokyoTime . parseUtc)),
     "volume : " <> r ^. #volume
   ]
             

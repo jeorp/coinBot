@@ -1,5 +1,6 @@
-
+{-# LANGUAGE OverloadedStrings #-}
 module Time where 
+import qualified Data.Text as T
 import Data.Time.Calendar
 import Data.Time.Clock
 import Data.Time.LocalTime
@@ -29,3 +30,18 @@ utcToLocal = fmap zonedTimeToLocalTime . utcToLocalZonedTime
 
 sysToLocal :: SystemTime -> IO LocalTime 
 sysToLocal =  utcToLocal . systemToUTCTime
+
+
+tokyoTimeZone :: TimeZone
+tokyoTimeZone = minutesToTimeZone 540
+
+utcToTokyoTime :: UTCTime -> ZonedTime
+utcToTokyoTime = utcToZonedTime tokyoTimeZone
+
+--"2022-01-04T14:00:29.203Z" -> like "2022-01-04 14:02:56.033454234 UTC"
+parseUtc :: T.Text -> UTCTime 
+parseUtc text = 
+  let (day, remain) = T.break (=='T') text
+      minutes = T.takeWhile (/= 'Z') $ T.drop 1 remain
+    in (read. T.unpack) $ T.intercalate " " [day, minutes] <> " UTC"
+      
