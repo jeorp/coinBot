@@ -32,13 +32,12 @@ instance ToRecord Order'' where
       ]
 
 instance ToRecord Margin' where
-    toRecord (Margin' p a m c r l) = record 
+    toRecord (Margin' p a m c l) = record 
       [
         toField p, 
         toField a, 
         toField m,
         toField c,
-        toField r,
         toField l     
       ]
 

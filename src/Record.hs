@@ -72,7 +72,6 @@ type Margin = Record
     "availableAmount":> Text,
     "margin":> Text,
     "marginCallStatus":> Text,
-    "marginRatio":> Text,
     "profitLoss":> Text
   ]
 

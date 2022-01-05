@@ -5,22 +5,29 @@
 
 module Gmo.ToRecord where
 import Data.Text
+import Data.Text.Encoding
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as BL 
 import Data.Extensible
 import Control.Lens hiding ((:>))
+import Control.Arrow
 import Data.Maybe
 import qualified Data.Vector as V  
 import Data.Aeson
 import Data.Aeson.Lens
 import Control.Monad
 import Record
+import GetToken
 import Common
 import Gmo.RestApi
+import Gmo.GetInfo
 import Gmo.WsApi
 
-
+extractData :: IO B.ByteString -> IO (Maybe Value)
+extractData obj = do
+    val <- obj
+    let res = (val ^? key "data" .  _Value) in return res
 
 extractTag :: Text -> IO B.ByteString -> IO (Maybe Value)
 extractTag tag obj = do
@@ -57,6 +64,29 @@ extractKlines c interval date = do
   let xs = decode . encode <$> mval :: (V.Vector (Maybe Kline))
   pure $ V.catMaybes xs
 
+--------------------------------------------
+
+gmoToken :: IO GMOToken
+gmoToken = do
+  bb <- either (const ("", ""))  ((^. api_token) &&& (^. api_token_secret)) <$> extract
+  print bb
+  pure $ both %~ encodeUtf8 $ bb
+
+extractMargin :: IO (Maybe Margin)
+extractMargin = do
+  token <- gmoToken
+  mval <- extractData $ getMargin token
+  let val = encode $ fromMaybe Null mval :: BL.ByteString
+      res = decode val 
+  print val
+  pure res
+
+extractAssets :: IO (V.Vector Assets)
+extractAssets = do
+  token <- gmoToken
+  mval <- extractTraversal $ getAssets token
+  let xs = decode . encode <$> mval :: (V.Vector (Maybe Assets))
+  pure $ V.catMaybes xs
 
 -------------------------------------------
 

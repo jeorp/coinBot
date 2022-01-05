@@ -25,6 +25,7 @@ textToByteString = BS.pack . unpack
 gmoToken :: IO GMOToken
 gmoToken = do
   bb <- either (const ("", ""))  ((^. api_token) &&& (^. api_token_secret)) <$> extract
+  print bb
   pure $ both %~ textToByteString $ bb
 
 extractTag :: Text -> IO B.ByteString -> IO (Maybe Text)

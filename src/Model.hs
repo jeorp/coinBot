@@ -73,7 +73,6 @@ data Margin' = Margin'
     _MavailableAmount :: Float,
     _Mmargin :: Float,
     _MmarginCallStatus :: T.Text,
-    _MmarginRatio :: Float,
     _MprofitLoss :: Float
   }
 
@@ -84,7 +83,6 @@ fromMargin m =
     (m ^. #availableAmount . to toFloat)
     (m ^. #margin . to toFloat)
     (m ^. #marginCallStatus)
-    (m ^. #marginRatio . to toFloat)
     (m ^. #profitLoss . to toFloat)
 
 data Assets' = Assets'
