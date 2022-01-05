@@ -53,9 +53,13 @@ doBroad m = do
   let input = T.unpack (messageText m)
       isCoinSelect = getLast $ lookupFromRegisteredA input (def :: Coin)
       isAllSelect = getLast $ lookupFromRegisteredA input (def :: ALL)
+      isMarginSelect = getLast $ lookupFromRegisteredA input (def :: MarginC)
+      isAssetsSelect = getLast $ lookupFromRegisteredA input (def :: AssetsC)
 
   when (isJust isCoinSelect) $ replyCoinRate $ fromMaybe def isCoinSelect 
   when (isJust isAllSelect) replyAllRates
+  when (isJust isMarginSelect) replyMargin
+  when (isJust isAssetsSelect) replyAssets
   where
     replyCoinRate :: Coin -> DiscordHandler ()
     replyCoinRate c = do
@@ -76,7 +80,27 @@ doBroad m = do
       rates <- liftIO extractRates
       if V.null rates
         then void $ restCall (R.CreateMessage (messageChannel m) "Can not get rates .. ")
-        else V.mapM_ (void . restCall . R.CreateMessage (messageChannel m) . rateToText) rates
+        else V.mapM_ (restCall . R.CreateMessage (messageChannel m) . rateToText) rates
+
+    replyMargin :: DiscordHandler ()
+    replyMargin = do
+      margin <- liftIO extractMargin
+      case margin of
+        Just ma -> do
+          void $ do
+            restCall (R.CreateMessage (messageChannel m) $ marginToText ma)
+        _ -> do
+          void $ restCall (R.CreateReaction (messageChannel m, messageId m) "eyes")
+          threadDelay (1 * 10^6)
+          void $ restCall (R.CreateMessage (messageChannel m) "Can not get margin .. ")
+      return ()
+
+    replyAssets :: DiscordHandler ()
+    replyAssets = do
+      assets <- liftIO extractAssets 
+      if V.null assets
+        then void $ restCall (R.CreateMessage (messageChannel m) "Can not get rates .. ")
+        else V.mapM_ (restCall . R.CreateMessage (messageChannel m) . assetsToText) assets
     
     uploadFile :: FilePath -> T.Text -> DiscordHandler ()
     uploadFile path text = do

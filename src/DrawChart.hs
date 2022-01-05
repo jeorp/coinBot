@@ -3,6 +3,7 @@ module DrawChart where
 
 import StoreSql
 import Model
+import Time
 import Data.Default.Class
 import qualified Data.Int as I
 import qualified Data.Text as T
@@ -23,4 +24,4 @@ drawKlines path xs = do
     plot (line "price" [ [ (klineToLocalTime k, _klineClose k) |  k <- xs] ])
   where
     klineToLocalTime :: Kline' -> LocalTime
-    klineToLocalTime = utcToLocalTime utc . _klineOpenTime
+    klineToLocalTime = utcToLocalTime tokyoTimeZone . _klineOpenTime

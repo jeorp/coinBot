@@ -7,7 +7,7 @@ import Control.Exception.Safe
 import Control.Monad.IO.Class
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow 
-
+import qualified Data.Text as T 
 import qualified Data.Vector as V 
 import Model
 
@@ -21,7 +21,7 @@ klineMigrateQuery :: Query -> Query
 klineMigrateQuery table = 
   "create table " <> 
   table <> 
-  " ( opentime text not null, open real not null, high real not null, low real not null, close real not null, volue real not null)"
+  " ( opentime text not null, open real not null, high real not null, low real not null, close real not null, volume real not null)"
 
 
 openDatabase :: (MonadIO m, MonadCatch m) => m Connection -> (Connection -> m a ) -> m a
@@ -33,10 +33,10 @@ migrateModel query path errorHandle = do
     openDatabase (liftIO $ open path) $ \conn ->
       liftIO (execute_ conn query) `catch` errorHandle
 
-flushTableData :: (MonadIO m, MonadCatch m) => Query -> String -> (SQLError -> m ()) -> m ()
+flushTableData :: (MonadIO m, MonadCatch m) => String -> String -> (SQLError -> m ()) -> m ()
 flushTableData table_name path errorHandler = do
     openDatabase (liftIO $ open path) $ \conn ->
-      liftIO (execute_ conn ("delete from " <> table_name <> ";")) `catch` errorHandler
+      liftIO (execute_ conn ("delete from " <> Query (T.pack table_name) <> " ;")) `catch` errorHandler
 
 --select example
 selectData :: (FromRow q, MonadIO m, MonadCatch m) => Query -> String -> [Handler m [q]] -> m [q]

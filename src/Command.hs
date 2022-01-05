@@ -71,7 +71,7 @@ instance Registered "xrp_jpy" where
 instance Registered "all" where
   command _ = "All"
 
-instance Registered "asstes" where
+instance Registered "assets" where
   command _ = "Assets"
 
 instance Registered "margin" where
@@ -84,6 +84,24 @@ all_ = lens (const ALL) (const id)
 
 instance Default ALL where
   def = ALL
+
+data AssetsC = AssetsC deriving (Show, Eq)
+
+assets_ :: Lens' AssetsC AssetsC 
+assets_ = lens (const AssetsC) (const id)
+
+instance Default AssetsC where
+  def = AssetsC
+
+data MarginC = MarginC deriving (Show, Eq)
+
+instance Default MarginC where
+  def = MarginC
+
+margin_ :: Lens' MarginC MarginC 
+margin_ = lens (const MarginC) (const id)
+
+
 
 data Command' s a = forall l. (KnownSymbol l, Registered l) => Relate (Lens' s a) (Proxy l)
 
@@ -139,6 +157,24 @@ instance CommandObj ALL ALL where
   symbols = 
     [
       Relate all_ (Proxy :: Proxy "all")
+    ]
+    
+  lookupRegistered = lookupRegisteredSS symbols
+  lookupFromRegisteredA = lookupFromRegisteredSS symbols
+
+instance CommandObj AssetsC AssetsC where
+  symbols = 
+    [
+      Relate assets_ (Proxy :: Proxy "assets")
+    ]
+    
+  lookupRegistered = lookupRegisteredSS symbols
+  lookupFromRegisteredA = lookupFromRegisteredSS symbols
+
+instance CommandObj MarginC MarginC where
+  symbols = 
+    [
+      Relate margin_ (Proxy :: Proxy "margin")
     ]
     
   lookupRegistered = lookupRegisteredSS symbols

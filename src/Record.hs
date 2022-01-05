@@ -75,12 +75,31 @@ type Margin = Record
     "profitLoss":> Text
   ]
 
+marginToText :: Margin -> Text
+marginToText m = intercalate "\n"
+  [
+    "actualProfitLoss : " <> m ^. #actualProfitLoss,
+    "availableAmount : " <> m ^. #availableAmount,
+    "margin : " <> m ^. #margin ,
+    "marginCallStatus : " <> m ^. #marginCallStatus,
+    "profitLoss : " <> m ^. #profitLoss
+  ]
+
 type Assets = Record 
   [
     "amount":> Text,
     "available":> Text,
     "conversionRate":> Text,
     "symbol":> Text
+  ]
+
+assetsToText :: Assets -> Text
+assetsToText a = intercalate "\n"
+  [
+    "amount : " <> a ^. #amount,
+    "available : " <> a ^. #available,
+    "conversionRate : " <> a ^. #conversionRate,
+    "symbol : " <> a ^. #symbol
   ]
 
 type OrderInfo = Record
