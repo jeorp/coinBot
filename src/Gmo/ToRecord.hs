@@ -77,9 +77,7 @@ extractMargin = do
   token <- gmoToken
   mval <- extractData $ getMargin token
   let val = encode $ fromMaybe Null mval :: BL.ByteString
-      res = decode val 
-  print val
-  pure res
+  pure $ decode val 
 
 extractAssets :: IO (V.Vector Assets)
 extractAssets = do
