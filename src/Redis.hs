@@ -20,6 +20,7 @@ import Data.Text.Encoding
 import StoreSql
 import Record
 import Common
+import Time
 import Model
 
 executeRedis :: Redis () -> IO ()
@@ -27,7 +28,7 @@ executeRedis redis = bracket (checkedConnect defaultConnectInfo) (`runRedis` red
 
 uploadRateRedis :: Rate -> Redis ()
 uploadRateRedis rate = do
-  s <- hmset (rate ^. #symbol . to encodeUtf8<> "_rate") $ second encodeUtf8 <$>
+  s <- hmset (rate ^. #symbol . to encodeUtf8 <> "_rate") $ second encodeUtf8 <$>
     [
       ("ask", rate ^. #ask),
       ("bid", rate ^. #bid),
@@ -35,7 +36,7 @@ uploadRateRedis rate = do
       ("last", rate ^. #last),
       ("low", rate ^. #low),
       ("symbol", rate ^. #symbol),
-      ("timestamp", rate ^. #timestamp),
+      ("timestamp", rate ^. #timestamp . to (T.pack . show . parseUtc)),
       ("volume", rate ^. #volume)    
     ]
   liftIO $ print s
