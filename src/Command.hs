@@ -71,6 +71,12 @@ instance Registered "xrp_jpy" where
 instance Registered "all" where
   command _ = "All"
 
+instance Registered "asstes" where
+  command _ = "Assets"
+
+instance Registered "margin" where
+  command _ = "Margin"
+
 data ALL = ALL deriving (Show, Eq)
 
 all_ :: Lens' ALL ALL 

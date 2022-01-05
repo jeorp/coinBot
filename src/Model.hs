@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedLabels  #-}
+{-# LANGUAGE TemplateHaskell #-}
 module Model where
 
 import Record
@@ -10,28 +11,30 @@ import Data.Time.Clock
 import Data.Time.Clock.System
 import Data.Int
 
-toFloat :: T.Text -> Float 
-toFloat = read . T.unpack
+
+toDouble :: T.Text -> Double 
+toDouble = read . T.unpack
 
 data Order' = Order' 
   {
-    _price :: Float,
-    _size :: Float
+    _price :: Double,
+    _size :: Double
   } deriving (Show, Eq)
 
 fromOrder :: Order -> Order'
-fromOrder order = Order' (toFloat (order ^. #price)) (toFloat (order ^. #size))
+fromOrder order = Order' (toDouble (order ^. #price)) (toDouble (order ^. #size))
 
 data Kline' = Kline' 
   {
     _klineOpenTime :: UTCTime ,
-    _klineOpen :: Float,
-    _klineHigh :: Float,
-    _klineLow :: Float,
-    _klineClose :: Float,
-    _klineVolume :: Float
+    _klineOpen :: Double,
+    _klineHigh :: Double,
+    _klineLow :: Double,
+    _klineClose :: Double,
+    _klineVolume :: Double
   } deriving (Show, Eq)
 
+makeLenses ''Kline'
 
 fromKline :: Kline -> Kline'
 fromKline kl = 
@@ -39,65 +42,67 @@ fromKline kl =
       sysTime = MkSystemTime (unix `div` 1000) 0
   in Kline' 
       (systemToUTCTime sysTime) 
-      (toFloat (kl ^. #open)) 
-      (toFloat (kl ^. #high))
-      (toFloat (kl ^. #low))
-      (toFloat (kl ^. #close)) 
-      (toFloat (kl ^. #volume))
+      (toDouble (kl ^. #open)) 
+      (toDouble (kl ^. #high))
+      (toDouble (kl ^. #low))
+      (toDouble (kl ^. #close)) 
+      (toDouble (kl ^. #volume))
   
 data Rate' = Rate' 
   {
-    _rateAsk :: Float,
-    _rateBid :: Float, 
-    _rateHigh :: Float,
-    _rateLow :: Float,
+    _rateAsk :: Double,
+    _rateBid :: Double, 
+    _rateHigh :: Double,
+    _rateLow :: Double,
     _rateSymbol :: T.Text,
     _rateTimestamp :: T.Text,
-    _rateVolume :: Float
+    _rateVolume :: Double
   }
+
+makeLenses ''Rate'
 
 fromRate :: Rate -> Rate'
 fromRate r =
   Rate' 
-    (r ^. #ask . to toFloat)
-    (r ^. #bid . to toFloat) 
-    (r ^. #high . to toFloat)
-    (r ^. #low . to toFloat)
+    (r ^. #ask . to toDouble)
+    (r ^. #bid . to toDouble) 
+    (r ^. #high . to toDouble)
+    (r ^. #low . to toDouble)
     (r ^. #symbol)
     (r ^. #timestamp)
-    (r ^. #volume . to toFloat)
+    (r ^. #volume . to toDouble)
 
 data Margin' = Margin' 
   {
-    _MactualProfitLoss :: Float,
-    _MavailableAmount :: Float,
-    _Mmargin :: Float,
+    _MactualProfitLoss :: Double,
+    _MavailableAmount :: Double,
+    _Mmargin :: Double,
     _MmarginCallStatus :: T.Text,
-    _MprofitLoss :: Float
+    _MprofitLoss :: Double
   }
 
 fromMargin :: Margin -> Margin'
 fromMargin m = 
   Margin' 
-    (m ^. #actualProfitLoss . to toFloat)
-    (m ^. #availableAmount . to toFloat)
-    (m ^. #margin . to toFloat)
+    (m ^. #actualProfitLoss . to toDouble)
+    (m ^. #availableAmount . to toDouble)
+    (m ^. #margin . to toDouble)
     (m ^. #marginCallStatus)
-    (m ^. #profitLoss . to toFloat)
+    (m ^. #profitLoss . to toDouble)
 
 data Assets' = Assets'
   {
-    _Aamount :: Float,
-    _Aavailable :: Float,
-    _AconversionRate :: Float,
+    _Aamount :: Double,
+    _Aavailable :: Double,
+    _AconversionRate :: Double,
     _Asymbol :: T.Text
   }
 
 fromAssets :: Assets -> Assets'
 fromAssets a = 
   Assets' 
-    (a ^. #amount . to toFloat)
-    (a ^. #available . to toFloat)
-    (a ^. #conversionRate . to toFloat)
+    (a ^. #amount . to toDouble)
+    (a ^. #available . to toDouble)
+    (a ^. #conversionRate . to toDouble)
     (a ^. #symbol)
 
