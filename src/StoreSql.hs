@@ -21,7 +21,7 @@ klineMigrateQuery :: Query -> Query
 klineMigrateQuery table = 
   "create table " <> 
   table <> 
-  " ( opentime text not null, open real not null, high real not null, low real not null, close real not null, volume real not null)"
+  " if not exists ( opentime text not null, open real not null, high real not null, low real not null, close real not null, volume real not null)"
 
 
 openDatabase :: (MonadIO m, MonadCatch m) => m Connection -> (Connection -> m a ) -> m a

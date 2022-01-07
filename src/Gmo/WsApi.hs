@@ -12,6 +12,7 @@ import           Network.Socket      (withSocketsDo)
 import qualified Network.WebSockets  as WS
 import qualified Wuss                as WSS (runSecureClient)
 import qualified Data.ByteString.Lazy.Char8 as B
+import qualified Network.WebSockets as Ws
 
 --makeLenses 
 
@@ -23,6 +24,7 @@ wsStream tag subscribe recv conn = do
 
     _ <- forkIO $ forever $ do
         msg <- WS.receiveData conn
+
         recv msg -- action ex. insert something into DB 
 
     getLine -- its action should be forever.. otherwise, this scope will soon be finished.
